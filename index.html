@@ -135,7 +135,7 @@
   .obj .grad{position:absolute;left:0;right:0;bottom:0;height:44px;pointer-events:none;background:repeating-linear-gradient(to right,rgba(0,0,0,.5) 0 3px,transparent 3px var(--m)) bottom/100% 44px no-repeat,repeating-linear-gradient(to right,rgba(0,0,0,.35) 0 2px,transparent 2px var(--p)) bottom/100% 20px no-repeat}
   html,body{overscroll-behavior-x:none}
   .obj .nom{position:sticky;left:14px;display:inline-block;margin:12px 14px 0;font-weight:600;font-size:14px;line-height:1.3;color:var(--ink)}
-  .obj .nom.paye{margin-top:10px}
+  .obj .nom.paye{margin-top:10px;z-index:2}
   .paye em{display:flex;align-items:center;gap:7px;font-style:normal;font-weight:400;font-size:13px;color:var(--mute);margin-bottom:3px}
   .paye em .puce{display:inline-block;position:static;width:10px;height:10px}
   .paye strong{display:block;font-family:var(--ft);font-weight:600;font-size:clamp(16px,1.35vw,20px);line-height:1.2;letter-spacing:-.01em}
@@ -637,7 +637,7 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
     el('eti borne','Début de la fortune de Bernard Arnault',{left:(xF)+'px',width:(tel?260:600)+'px',bottom:(H-yb+10)+'px'});
     let c=xF+marge;
     c=texte(c,'Que pourrait-on faire en France avec cette fortune ?')+marge;
-    const sommeV=items.reduce((a,o)=>a+o.v,0),place=LF-(c-xF)-items.length*marge*2-reste.length*(tw+marge*2)-W;const hI=Math.min(B,Math.max(Math.round(B*0.68),Math.ceil(sommeV/1000/Math.max(1,place))));                 // les choses payées sont plus basses que la bande : on voit la fortune au-dessus
+    const hI=B; // blocs sur toute la hauteur : chaque bloc prend exactement sa part de la bande, le reste de la fortune se voit en entier à la fin                 // les choses payées sont plus basses que la bande : on voit la fortune au-dessus
     for(const o of items){
       const w=Math.max(1,Math.round(o.v/1000/hI));
       const d=el('obj',`<span class="nom paye" style="max-width:${Math.max(120,Math.min(w-28,W-40,tel?260:380))}px"><strong>${o.l}</strong><span class="cout">${o.v>=1e9&&o.v<1e10?fr(o.v/1e9,2)+" milliard"+(o.v>=2e9?"s":"")+" €":eur(o.v)}</span></span><div class="pave" style="height:${hI}px;background:var(${o.c})"></div><div class="grad" style="--p:${1e8/1000/hI}px;--m:${1e9/1000/hI}px"></div>`,{left:c+'px',top:yb+'px',width:w+'px',height:B+'px'});
@@ -654,10 +654,10 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
         // repères dans les grands blocs : où on en est
         if(o.v>=2e9){const mil=1e9/1000/hI,tot=Math.round(o.v/1e9);
           for(let k=1;k<tot;k++)el('repere',`${k} milliard${k>1?'s':''} sur ${tot}`,{left:(c+k*mil)+'px',top:(yb+B-hI+12)+'px'});}
-        c+=w+marge*2;
+        c+=w+8;
       }else{ // bloc trop court pour étaler les textes : on les empile dans le bloc, l'un au-dessus de l'autre
         el('txt pile',txts.map(t=>`<p>${t}</p>`).join(''),{left:(c+14)+'px',width:Math.max(60,w-28)+'px',bottom:(yb+52)+'px'});
-        c+=w+marge*2;
+        c+=w+8;
       }
     }
     const fin=xF+LF;const nR=Math.max(1,Math.min(reste.length,Math.floor((fin-c-300)/(tw+marge*2))));const pas=Math.max(tw+marge*2,(fin-c-W)/nR);
