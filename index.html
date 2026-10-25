@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Une autre échelle</title>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Public+Sans:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;600&family=Fraunces:opsz,wght,SOFT@9..144,400..800,100&family=Figtree:wght@400;600&family=Familjen+Grotesk:wght@400..700&family=Hanken+Grotesk:wght@400;600&family=Epilogue:wght@400..800&family=Karla:wght@400;600&family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+  :root{--bande:#d3dce3;--b1:#7f9d7c;--b2:#8a80b4;--b3:#c9875c;--bg:#ece6d8;--bg2:#e4e8dc;--ink:#26262e;--mute:#75736c;--accent:#9a4f3f;--acc-ink:#f6f1e8;--rail:#c9c2b2;--cache:#d9d2c2;--cache2:#d2d8ca}
+  :root[data-theme="dark"]{--bande:#2e383f;--b1:#4a5a49;--b2:#4b4660;--b3:#5e4a3b;--bg:#27262a;--bg2:#24282a;--ink:#e8e2d6;--mute:#9b978e;--accent:#cf8068;--acc-ink:#211d1b;--rail:#4a4740;--cache:#3a3836;--cache2:#363b38}
+  *{box-sizing:border-box}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb)}
+  .fixe{position:fixed;left:0;right:0;z-index:5;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;font-size:14px;color:var(--mute)}
+  .fixe.haut{top:0}.fixe.bas{bottom:0}
+  .fixe *{pointer-events:auto}
+  .mark{font-family:var(--ft);font-weight:700;font-size:20px;color:var(--ink);letter-spacing:-.01em}
+  .fixe b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .fixe button{font:inherit;font-size:13px;border:1px solid var(--mute);background:transparent;color:var(--mute);padding:7px 12px;cursor:pointer}
+  section{min-height:100vh;scroll-snap-align:start;padding:90px 32px 70px;display:flex;flex-direction:column;justify-content:safe center}
+  section:nth-child(even){background:var(--bg2);--cache:var(--cache2)}
+  .partie{font-size:14px;color:var(--mute);margin:0 0 16px}
+  h2 u{text-decoration:underline;text-decoration-thickness:.07em;text-underline-offset:.14em;text-decoration-color:var(--accent)}
+  h2{font-family:var(--ft);font-weight:600;font-size:clamp(26px,3.6vw,52px);line-height:1.08;letter-spacing:-.02em;margin:0 0 36px;max-width:960px}
+  /* une ligne : qui, puis le chiffre et son explication */
+  .ligne{display:grid;grid-template-columns:210px 1fr;gap:0 40px;border-top:1px solid var(--rail);padding:12px 0 22px;max-width:min(1500px,100%);align-items:start}
+  .ligne .k{font-size:14px;color:var(--mute);padding-top:8px;line-height:1.4;font-variant-numeric:tabular-nums}
+  .ligne .k b{display:block;color:var(--ink);font-weight:600}
+  .chiffre{font-family:var(--ft);font-weight:600;font-size:clamp(26px,3.4vw,48px);line-height:1.08;letter-spacing:-.02em}
+  .detail{font-size:16px;line-height:1.5;color:var(--mute);margin-top:6px;max-width:640px}
+  .ligne.mi{border-top-color:var(--accent)}
+  .ligne.mi .k b{color:var(--accent)}
+  .ligne.mi .chiffre{color:var(--accent)}
+  .ligne.mi .detail{color:var(--ink)}
+  /* la case à révéler */
+  .cache{display:block;width:100%;max-width:440px;height:58px;border:0;background:var(--cache);color:var(--mute);font:inherit;font-size:15px;text-align:left;padding:0 20px;cursor:pointer}
+  .cache:hover{color:var(--ink)}
+  .ligne.mi .cache{background:var(--accent);color:var(--acc-ink)}
+  .rev{animation:rev .35s ease}
+  @keyframes rev{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.rev{animation:none}}
+  /* transitions à l'échelle */
+  .trans p{font-size:17px;line-height:1.55;max-width:600px;margin:0 0 18px;color:var(--ink)}
+  .trans h2{margin-bottom:18px}
+  .bande{overflow-x:auto;overflow-y:hidden;height:130px;margin:18px 0 6px;cursor:grab;scrollbar-width:thin}
+  .bande:active{cursor:grabbing}
+  .piste{position:relative;height:130px}
+  .rail{position:absolute;left:0;right:0;top:40px;height:2px;background:var(--ink)}
+  .piste i{position:absolute;top:30px;width:2px;height:22px;background:var(--ink)}
+  .piste i.acc{background:var(--accent);height:30px;top:26px}
+  .piste span{position:absolute;top:64px;font-size:13px;color:var(--mute);white-space:nowrap;padding-left:8px}
+  .piste span.acc{color:var(--accent);font-weight:600}
+  .echelle{display:block;width:100%;height:150px;margin:18px 0 6px;cursor:grab;touch-action:pan-y}
+  .echelle:active{cursor:grabbing}
+  .lien{font:inherit;font-size:14px;border:0;background:none;color:var(--mute);text-decoration:underline;cursor:pointer;padding:0}
+  .lecture{font-size:14px;color:var(--mute)}
+  .lecture b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .dense h2{margin-bottom:22px}
+  .dense .ligne{padding:5px 0 8px;gap:0 32px}
+  .dense .ligne .k{padding-top:6px;font-size:13px}
+  .dense .chiffre{font-size:clamp(20px,2.2vw,30px)}
+  .dense .detail{font-size:15px;margin-top:3px}
+  .dense .cache{height:40px}
+  .ouv h2{font-size:clamp(44px,8vw,120px);margin-bottom:28px;letter-spacing:-.03em}
+  .ouv p,.fin p{font-size:18px;line-height:1.55;max-width:560px;margin:0 0 14px;color:var(--ink)}
+  .note{font-size:13px;color:var(--mute);max-width:640px;line-height:1.6;margin-top:28px}
+  @media (max-width:640px){
+    section{padding:76px 20px 64px}
+    h2{margin-bottom:24px;font-size:clamp(24px,6.8vw,32px)}
+    .ligne{grid-template-columns:1fr;gap:4px;padding:10px 0 16px}
+    .ligne .k{padding-top:0;font-size:13px}.ligne .k b{display:inline;margin-right:8px}
+    .chiffre{font-size:clamp(22px,6.4vw,30px)}
+    .detail{font-size:15px}
+    .cache{height:50px;padding:0 16px}
+    .dense .ligne{padding:6px 0 10px}.dense .chiffre{font-size:clamp(20px,5.6vw,26px)}.dense .detail{font-size:14px}.dense .cache{height:42px}
+    .fixe{padding:14px 20px}
+    .ouv p,.fin p{font-size:16px}
+  }
+
+  /* ---- révélation façon 3A ---- */
+  .ligne{cursor:pointer;align-items:center;padding:10px 0 12px}
+  .ligne.on{cursor:default}
+  .ligne .v{min-height:28px;display:flex;flex-direction:column;justify-content:center}
+  .ligne:not(.on) .v::after{content:"révéler";font-size:13px;color:var(--mute)}
+  .ligne:not(.on) .v > *{display:none}
+  .ligne .chiffre,.dense .ligne .chiffre{font-weight:700;letter-spacing:-.03em;line-height:1;font-size:calc(clamp(22px,min(3vw,4.6vh),44px) * var(--f,1))}
+  .ligne.grand .chiffre,.dense .ligne.grand .chiffre{font-size:calc(clamp(30px,min(5.2vw,8vh),88px) * var(--f,1))}
+  .ligne.mi .chiffre,.dense .ligne.mi .chiffre{font-size:calc(clamp(40px,min(8.5vw,13vh),150px) * var(--fa,1));white-space:nowrap}
+  @media (max-width:640px){.ligne.mi .chiffre,.dense .ligne.mi .chiffre{white-space:normal}}
+  .ligne.on .v > *{animation:monte .45s cubic-bezier(.2,.8,.2,1) both}
+  .ligne.on .detail{animation-delay:.25s}
+  @keyframes monte{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .dense .ligne:not(.mi) .detail{display:none}
+  @media (max-height:820px){.dense .ligne .k b{display:inline;margin-right:8px}.dense .ligne{grid-template-columns:300px 1fr}}
+  .aide{font-size:13px;color:var(--mute)}
+  section h2{font-size:calc(clamp(26px,3.6vw,52px) * var(--fh,1))}
+  .dense h2{margin-bottom:calc(22px * var(--fh,1))}
+  .ligne,.dense .ligne{padding:calc(9px * var(--f,1)) 0 calc(11px * var(--f,1))}
+  .ligne .k{font-size:calc(14px * max(var(--f,1),.85))}
+  @media (max-width:640px){section h2{font-size:calc(clamp(24px,6.8vw,32px) * var(--fh,1))}.ligne{align-items:start}.ligne .chiffre,.dense .ligne .chiffre{font-size:calc(clamp(20px,6.4vw,30px) * var(--f,1))}.ligne.grand .chiffre,.dense .ligne.grand .chiffre{font-size:calc(clamp(26px,9vw,42px) * var(--f,1))}.ligne.mi .chiffre,.dense .ligne.mi .chiffre{font-size:calc(clamp(34px,13vw,64px) * var(--fa,1))}}
+
+  @media (max-width:640px){
+    .dense .ligne:not(.mi){grid-template-columns:1fr auto;gap:0 12px;align-items:center}
+    .dense .ligne:not(.mi) .k b{display:inline;margin-right:6px}
+    .dense .ligne:not(.mi) .v{align-items:flex-end;text-align:right}
+    .dense .ligne:not(.mi) .chiffre{font-size:calc(22px * var(--f,1))}
+    .dense .ligne:not(.mi) .v{white-space:nowrap}
+    section{padding-bottom:52px}
+  }
+
+  /* ---- la ligne d'Arnault ---- */
+  .voie{contain:strict}
+  section.echelle-arnault{display:block;padding:0;min-height:0;height:100vh;height:100svh;scroll-snap-align:start}
+  .echelle-arnault .colle{height:100vh;height:100svh;display:flex;flex-direction:column;padding:78px 32px 62px;box-sizing:border-box}
+  .echelle-arnault h2{font-size:clamp(20px,2.2vw,32px)!important;margin:0 0 10px!important}
+  .voie{position:relative;flex:1;min-height:240px;margin:0 -32px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--rail) transparent;cursor:grab;-webkit-overflow-scrolling:touch}
+  .voie.prise{cursor:grabbing;user-select:none}
+  .monde{position:absolute;left:0;top:0;height:100%}
+  .monde>*{position:absolute;white-space:normal}
+  .monde .nom{white-space:normal}
+  .bandeF{background:var(--bande)}
+  .obj{box-sizing:border-box}
+  .obj .pave{position:absolute;left:0;right:0;bottom:0}
+  .obj .grad{position:absolute;left:0;right:0;bottom:0;height:44px;pointer-events:none;background:repeating-linear-gradient(to right,rgba(0,0,0,.5) 0 3px,transparent 3px var(--m)) bottom/100% 44px no-repeat,repeating-linear-gradient(to right,rgba(0,0,0,.35) 0 2px,transparent 2px var(--p)) bottom/100% 20px no-repeat}
+  html,body{overscroll-behavior-x:none}
+  .obj .nom{position:sticky;left:14px;display:inline-block;margin:12px 14px 0;font-weight:600;font-size:14px;line-height:1.3;color:var(--ink)}
+  .obj .nom.paye{margin-top:10px}
+  .paye em{display:flex;align-items:center;gap:7px;font-style:normal;font-weight:400;font-size:13px;color:var(--mute);margin-bottom:3px}
+  .paye em .puce{display:inline-block;position:static;width:10px;height:10px}
+  .paye strong{display:block;font-family:var(--ft);font-weight:600;font-size:clamp(16px,1.35vw,20px);line-height:1.2;letter-spacing:-.01em}
+  .paye .cout{display:block;position:static;color:var(--ink);font-family:var(--ft);font-weight:600;font-size:clamp(16px,1.35vw,20px);margin-top:3px;font-variant-numeric:tabular-nums}
+  .lentille{border:1.5px solid var(--ink);border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;transform:scale(.008);opacity:0;transform-origin:50% 50%;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .2s;cursor:zoom-out;z-index:3;pointer-events:none}
+  .lentille.ouverte{transform:scale(1);opacity:1;pointer-events:auto}
+  .lentille .carre{display:block;width:30px;height:30px;background:var(--ink)}
+  .leg-loupe{font-weight:400!important;font-size:12px!important;color:var(--mute);opacity:0;transition:opacity .3s .3s;pointer-events:none}
+  .leg-loupe.vue{opacity:1}
+  .vers-loupe{font:inherit;font-weight:600;color:var(--ink);background:none;border:0;padding:0;cursor:zoom-in;display:inline-flex;align-items:center;gap:5px;border-bottom:1px dashed var(--mute)}
+  .vers-loupe:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  @media (prefers-reduced-motion:reduce){.lentille{transition:none}}
+  .txt.pile p{margin:0 0 10px}
+  .eti.borne{font-family:var(--ft);font-size:clamp(18px,1.8vw,26px)!important;line-height:1.15;color:var(--accent)}
+  .eti{font-weight:600;font-size:14px;line-height:1.3;color:var(--ink)}
+  .txt{font-size:clamp(16px,1.35vw,20px);line-height:1.45;color:var(--ink)}
+  .txt b{font-weight:700}
+  .regle{height:1px;background:var(--rail)}
+  .repere{font-size:12px;color:var(--ink);opacity:.55;white-space:nowrap;padding-left:6px;border-left:1px solid currentColor;line-height:1}
+  .barreA{margin-top:12px;font-size:14px;color:var(--mute);min-height:58px}
+  .barreA>span{display:flex;gap:56px;flex-wrap:wrap;align-items:flex-end}
+  .cpt small{display:block;font-size:13px;color:var(--mute);margin-bottom:2px}
+  .cpt b{font-family:var(--ft);font-weight:700;font-size:clamp(22px,2.3vw,34px);line-height:1;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .barreA .cpt.reste b{color:var(--accent)}
+  .barreA b{color:var(--ink);font-variant-numeric:tabular-nums}
+  @media (max-width:640px){
+    .echelle-arnault .colle{padding:64px 20px 58px}
+    .voie{margin:0 -20px}
+    .obj .nom,.eti{font-size:12px}
+    .paye em{font-size:11px}.paye strong,.paye .cout{font-size:15px}
+    .barreA{font-size:12px;min-height:46px}.barreA>span{gap:24px}.cpt small{font-size:11px}.cpt b{font-size:20px}
+  }
+  /* ---- le TGV et les 3 % ---- */
+  .trois .camembert{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:min(30vw,42vh);height:auto}
+  .trois .disque{fill:var(--cache)}
+  .trois .part{fill:var(--accent);transition:transform .8s cubic-bezier(.2,.8,.2,1);transform-origin:0 0}
+  .trois.ouvert .part{transform:translate(.08px,-.06px)}
+  .trois .ligne{max-width:min(960px,58vw)}
+  .trois h2,.trois .ex,.trois .question{max-width:min(960px,58vw)}
+  .fin3 .ligne.un .chiffre{font-size:calc(clamp(30px,min(4.6vw,7vh),72px) * var(--f,1))!important}
+  .monde-live .live{display:flex;align-items:baseline;gap:24px;flex-wrap:wrap;margin:18px 0 14px;border-top:1px solid var(--accent);padding-top:18px;max-width:min(1500px,100%)}
+  .monde-live .live b{font-family:var(--ft);font-weight:700;font-size:clamp(44px,min(8vw,13vh),140px);line-height:1;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+  .monde-live .live span{font-size:clamp(17px,1.5vw,22px);color:var(--ink);font-variant-numeric:tabular-nums}
+  .monde-live .lent{font-size:15px;color:var(--mute);margin:0}
+  @media (max-width:640px){.dense.fin3 .ligne.un{grid-template-columns:1fr!important}.dense.fin3 .ligne.un .v{align-items:flex-start!important;text-align:left!important;white-space:normal!important}.monde-live .live{gap:6px 14px}.monde-live .live span{flex-basis:100%}}
+  section.trois{position:relative}
+  @media (max-width:640px){
+    .trois .camembert{position:static;transform:none;width:120px;margin:0 0 10px}
+    .trois .ligne,.trois h2{max-width:none}
+  }
+  .precision{font-size:15px;color:var(--mute);margin:-8px 0 20px;max-width:720px}
+  @media (max-width:640px){.precision{font-size:13px;margin:-6px 0 14px}.dense .ligne.mi{grid-template-columns:1fr}.dense.trois .ligne:not(.mi){grid-template-columns:1fr}.dense.trois .ligne:not(.mi) .v{white-space:normal;align-items:flex-start;text-align:left}}
+  h2.situ{margin-bottom:calc(12px * var(--fh,1))!important}
+  .ex{font-size:calc(clamp(18px,1.7vw,26px) * var(--fh,1));line-height:1.3;color:var(--ink);margin:0 0 calc(8px * var(--fh,1))}
+  .question{font-family:var(--ft);font-weight:600;font-size:calc(clamp(19px,1.9vw,28px) * var(--fh,1));line-height:1.25;color:var(--ink);margin:calc(6px * var(--fh,1)) 0 calc(28px * var(--fh,1));max-width:960px}
+  .precision{margin:0 0 calc(6px * var(--fh,1))!important}
+  @media (max-width:640px) and (max-height:740px){.trois .camembert{display:none}}
+  @media (max-width:640px){.ex{font-size:calc(17px * var(--fh,1))}.question{font-size:calc(18px * var(--fh,1));padding-left:11px;margin-bottom:calc(18px * var(--fh,1))}}
+  .rejouer{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink)}
+  .rejouer:hover{color:var(--accent)}
+  .ligne>.v{min-width:0}
+  .compteurZ{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;margin:4px 0 6px}
+  .compteurZ b{font-family:var(--ft);font-weight:700;font-size:clamp(40px,min(6vw,9vh),96px);line-height:1;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+  .compteurZ span{font-size:15px;color:var(--mute);font-variant-numeric:tabular-nums}
+  .commentaire{font-family:var(--ft);font-weight:600;font-size:clamp(18px,1.6vw,24px)!important;line-height:1.3;min-height:2.7em;max-width:760px!important;margin:6px 0 10px!important}
+  @media (max-width:640px){#zoom .lecture{font-size:0}#zoom .lecture #zoomEtat{display:none}#zoom .lecture .rejouer{font-size:14px}}
+  @media (max-width:640px) and (max-height:720px){#zoom>p:not(.commentaire):not(.lecture){display:none}}
+  @media (max-width:640px){.compteurZ{gap:4px 14px}.compteurZ span{font-size:13px;flex-basis:100%}}
+  details.note summary{cursor:pointer;color:var(--ink);font-size:14px;list-style:none;display:inline-flex;align-items:center;gap:6px}
+  details.note summary::-webkit-details-marker{display:none}
+  details.note summary::before{content:"+";display:inline-block;width:1em;text-align:center;color:var(--accent);font-weight:700}
+  details.note[open] summary::before{content:"−"}
+  details.note>div{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,calc(100vw - 40px));max-height:calc(100vh - 120px);overflow:auto;background:var(--bg2);border:1px solid var(--rail);padding:26px 28px 22px;z-index:50;font-size:14px!important;line-height:1.6!important;color:var(--ink)}
+  @media (max-width:640px){details.note>div{font-size:13px!important;padding:20px 18px}}
+  details.note>div b{display:block;font-family:var(--ft);font-size:18px;margin-bottom:10px}
+  details.note>div .fermer{font:inherit;font-size:14px;margin-top:16px;background:var(--ink);color:var(--bg);border:0;padding:8px 16px;cursor:pointer}
+  details.note[open]::before{content:"";position:fixed;inset:0;background:rgba(40,36,30,.35);z-index:49}
+  details.note h4{font-family:var(--ft);font-size:15px;font-weight:600;margin:22px 0 6px;color:var(--ink)}
+  details.note ul.src{list-style:none;margin:0;padding:0}
+  details.note ul.src li{display:flex;justify-content:space-between;gap:18px;padding:7px 0;border-top:1px solid var(--rail);line-height:1.4;font-size:14px}
+  details.note ul.src li small{color:var(--mute);font-size:12.5px;text-align:right;flex:0 0 38%}
+  details.note .calc{font-size:13px;color:var(--mute);margin:18px 0 0}
+  details.note>div>b{font-size:22px!important}
+  @media (max-width:640px){details.note ul.src li{display:block;font-size:13px}details.note ul.src li small{display:block;text-align:left;margin-top:2px}}
+  .groupe{position:relative;padding-left:34px;max-width:min(1534px,100%)}
+  .groupe::before{content:"";position:absolute;left:16px;top:10px;bottom:10px;width:9px;border:1.5px solid var(--mute);border-right:0}
+  .groupe.g2::before{border-color:var(--accent)}
+  .groupe .nomg{position:absolute;left:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-size:12px;letter-spacing:.02em;color:var(--mute);white-space:nowrap}
+  .groupe.g2 .nomg{color:var(--accent)}
+  .groupe+.groupe{margin-top:calc(14px * var(--f,1))}
+  @media (max-width:640px){.groupe{padding-left:26px}.groupe::before{left:12px;width:7px}.groupe .nomg{font-size:11px}}
+  p,.txt,.question,.ex,.detail,.commentaire,.k,li{text-wrap:pretty}
+  h1,h2,.eti,.nom strong{text-wrap:balance}
+  #zoom,.echelle-arnault .colle{position:relative}
+  .fleche{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:flex-start;color:var(--accent);font-size:34px;font-weight:600;line-height:1;pointer-events:none;transition:opacity .5s;z-index:4}
+  .fleche span{margin:0 0 -4px 2px}
+  .fleche svg{width:220px;height:64px}
+  .fleche.cachee{opacity:0}
+  @media (max-width:640px){.fleche{font-size:26px}.fleche svg{width:160px;height:47px}}
+  h2.nombres{white-space:nowrap;font-variant-numeric:tabular-nums}
+  #zoom .lecture{font-size:0}#zoom .lecture #zoomEtat{display:none}#zoom .lecture .rejouer{font-size:14px}
+  :root{--ft:"Bricolage Grotesque",sans-serif;--fb:"Instrument Sans",sans-serif}
+  html[data-police="0"]{--ft:"Schibsted Grotesk",sans-serif;--fb:"Public Sans",sans-serif}
+  html[data-police="A"]{--ft:"Bricolage Grotesque",sans-serif;--fb:"Instrument Sans",sans-serif}
+  html[data-police="B"]{--ft:"Fraunces",serif;--fb:"Figtree",sans-serif}
+  html[data-police="C"]{--ft:"Familjen Grotesk",sans-serif;--fb:"Hanken Grotesk",sans-serif}
+  html[data-police="D"]{--ft:"Epilogue",sans-serif;--fb:"Karla",sans-serif}
+  html[data-police="E"]{--ft:"Archivo",sans-serif;--fb:"Archivo",sans-serif}
+  html[data-police="E"] h1,html[data-police="E"] h2,html[data-police="E"] .mark{font-stretch:125%}
+  html[data-police="B"] h1,html[data-police="B"] h2{font-variation-settings:"SOFT" 100}
+  .polices[hidden]{display:none}
+  .polices{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .polices button{min-width:34px;padding:6px 9px}
+  .polices button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .polices span{margin-left:8px;font-size:13px;color:var(--mute)}
+  @media (max-width:640px){.polices span{display:none}.polices button{min-width:28px;padding:5px 7px}}
+  .question span.q{background:#e9d5a8;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:.04em .22em;margin-left:-.22em}
+  html[data-theme="dark"] .question span.q{background:#5a4a2c}
+  .question{padding-left:0!important}
+</style>
+</head>
+<body>
+<div class="fixe haut"><div class="mark">Une autre échelle</div><div><b id="n">1</b> / <span id="tot"></span></div></div>
+<div class="fixe bas"><div class="aide">cliquer ou espace : réponse suivante</div><div class="polices" id="polices" hidden><button type="button" data-p="0">Actuelle</button><button type="button" data-p="A">A</button><button type="button" data-p="B">B</button><button type="button" data-p="C">C</button><button type="button" data-p="D">D</button><button type="button" data-p="E">E</button><span id="polNom"></span></div><button id="theme">Sombre</button></div>
+
+<main>
+
+<section class="ouv">
+  <h2 class="nombres">1 000 000 €<br>1 000 000 000 €</h2>
+  <p>À l'écrit, l'écart tient en trois zéros.<br>Dans la réalité, il est immense.</p>
+</section>
+
+<section class="dense">
+  <h2 class="situ">Vous gagnez le SMIC, 1 478 € net par mois, et vous ne dépensez rien.</h2>
+  <p class="question">Au bout de combien de temps avez-vous :</p>
+  <div class="ligne"><div class="k"><b>1 000 €</b></div><div class="v"><div class="chiffre">Trois semaines.</div></div></div>
+  <div class="ligne"><div class="k"><b>17 735 €</b></div><div class="v"><div class="chiffre">Un an.</div></div></div>
+  <div class="ligne"><div class="k"><b>1 million</b></div><div class="v"><button class="cache" data-c="56 ans" data-d="Une carrière entière, et il en manque encore.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="56 000 ans" data-d="Il aurait fallu commencer du temps de Néandertal, bien avant l'invention de l'agriculture.">Révéler</button></div></div>
+</section>
+
+<section>
+  <h2 class="situ">Maintenant vous dépensez 1 478 € par jour, un SMIC chaque jour.</h2>
+  <p class="question">Vous êtes ruiné quand ?</p>
+  <div class="ligne"><div class="k"><b>Avec 17 735 €</b>un an de SMIC</div><div class="v"><div class="chiffre">Dans douze jours.</div></div></div>
+  <div class="ligne"><div class="k"><b>Avec 1 million</b></div><div class="v"><button class="cache" data-c="Dans 1 an et 10 mois" data-d="">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Avec 1 milliard</b></div><div class="v"><button class="cache" data-c="Dans 1 850 ans" data-d="Pour être ruiné aujourd'hui, il aurait fallu commencer en l'an 173, sous Marc Aurèle.">Révéler</button></div></div>
+</section>
+
+<section>
+  <h2 class="situ">Vous placez l'argent à 3 % par an et vous vivez des intérêts, sans toucher au capital.</h2>
+  <p class="precision">Intérêts simples, non cumulés.</p>
+  <p class="question">Ça vous rapporte :</p>
+  <div class="ligne"><div class="k"><b>17 735 €</b>un an de SMIC</div><div class="v"><div class="chiffre">44 € par mois.</div></div></div>
+  <div class="ligne"><div class="k"><b>1 million</b></div><div class="v"><button class="cache" data-c="2 500 € par mois" data-d="Un bon salaire, pour toujours, sans travailler.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="82 000 € par jour" data-d="Quatre ans et demi de SMIC, chaque matin.">Révéler</button></div></div>
+</section>
+
+<section class="trans" id="zoom">
+  <div class="fleche" id="flecheZ" aria-hidden="true"><span>défiler</span><svg viewBox="0 0 170 50" width="170" height="50"><path d="M2 26H160M136 4l26 22-26 22" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h2>Avant d'aller plus loin, la même chose sur une ligne à l'échelle.</h2>
+  <canvas id="echelle" class="echelle"></canvas>
+  <div class="compteurZ"><b id="zoomPos">0 €</b><span id="zoomTrajet"></span></div>
+  <p class="commentaire" id="zoomCom"></p>
+  <p class="lecture"><span id="zoomEtat">la ligne s'éloigne</span> · <button class="lien rejouer" id="zoomRejouer"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 3v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Rejouer l'animation</button></p>
+</section>
+
+<section>
+  <h2 class="situ">Un million de secondes, un milliard de secondes.</h2>
+  <p class="question">Ça dure combien de temps ?</p>
+  <div class="ligne"><div class="k"><b>1 000 secondes</b></div><div class="v"><div class="chiffre">Dix-sept minutes.</div></div></div>
+  <div class="ligne"><div class="k"><b>1 million</b></div><div class="v"><button class="cache" data-c="11 jours et demi" data-d="Des vacances.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="31 ans et 8 mois" data-d="Plus d'un tiers d'une vie.">Révéler</button></div></div>
+</section>
+
+<section>
+  <h2 class="situ">Un pas fait 75 centimètres.</h2>
+  <p class="question">Jusqu'où vous mènent un million de pas ? Un milliard ?</p>
+  <div class="ligne"><div class="k"><b>1 000 pas</b></div><div class="v"><div class="chiffre">Jusqu'à la boulangerie du quartier : 750 m</div></div></div>
+  <div class="ligne"><div class="k"><b>1 million</b></div><div class="v"><button class="cache" data-c="Paris-Marseille" data-d="750 km : trois semaines de marche, à huit heures par jour.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="La Lune, aller-retour" data-d="750 000 km. La Lune est à 384 000 km de la Terre : c'est presque l'aller-retour.">Révéler</button></div></div>
+</section>
+
+<section>
+  <h2 class="situ">Votre cœur bat 65 fois par minute depuis votre naissance.</h2>
+  <p class="question">Quand atteint-il le million de battements ? Le milliard ?</p>
+  <div class="ligne"><div class="k"><b>1 000 battements</b></div><div class="v"><div class="chiffre">Au bout d'un quart d'heure.</div></div></div>
+  <div class="ligne"><div class="k"><b>1 million</b></div><div class="v"><button class="cache" data-c="Au bout de presque onze jours" data-d="">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="Vers 29 ans" data-d="">Révéler</button></div></div>
+</section>
+
+
+<section class="echelle-arnault" id="arnault">
+  <div class="colle">
+    <div class="fleche" id="flecheA" aria-hidden="true"><span>défiler</span><svg viewBox="0 0 170 50" width="170" height="50"><path d="M2 26H160M136 4l26 22-26 22" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="voie" id="piste"><div class="monde" id="monde"></div></div>
+    <div class="barreA"><span id="aInfo"></span></div>
+  </div>
+</section>
+
+<section class="dense">
+  <h2 class="situ">Quelqu'un qui gagne le SMIC toute sa vie et <u>ne dépense jamais rien</u> arrive à la retraite avec 800 000 €.</h2>
+  <p class="question">Une grande fortune, c'est combien de fois cette somme ?</p>
+  <div class="groupe"><span class="nomg">Millionnaires</span>
+  <div class="ligne"><div class="k"><b>Bad Bunny</b>90 millions €</div><div class="v"><button class="cache" data-c="112 fois" data-d="">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Kylian Mbappé</b>180 millions €</div><div class="v"><button class="cache" data-c="225 fois" data-d="">Révéler</button></div></div>
+  </div>
+  <div class="groupe g2"><span class="nomg">Milliardaires</span>
+  <div class="ligne"><div class="k"><b>Xavier Niel</b>28 milliards €</div><div class="v"><button class="cache" data-c="35 000 fois" data-d="Presque toute la population de Chartres, chacun travaillant 45 ans au SMIC.">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Bernard Arnault</b>125 milliards €</div><div class="v"><button class="cache" data-c="156 000 fois" data-d="Plus que toute la population de Brest, chacun travaillant 45 ans au SMIC.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Elon Musk</b>870 milliards €</div><div class="v"><button class="cache" data-c="1,1 million de fois" data-d="Plus que toute la population de Marseille, chacun travaillant 45 ans au SMIC sans rien dépenser.">Révéler</button></div></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="situ">Kylian Mbappé a 180 millions.</h2>
+  <p class="question">De qui est-il le plus proche : de vous, ou de Bernard Arnault ?</p>
+  <div class="ligne"><div class="k"><b>Entre vous et lui</b></div><div class="v"><div class="chiffre">180 millions d'euros.</div></div></div>
+  <div class="ligne"><div class="k"><b>Entre lui et Arnault</b></div><div class="v"><button class="cache" data-c="125 milliards d'euros" data-d="Mbappé est 700 fois plus proche de vous que de Bernard Arnault.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Entre lui et Musk</b></div><div class="v"><button class="cache" data-c="870 milliards d'euros" data-d="4 800 fois plus proche de vous que d'Elon Musk. À cette échelle, un millionnaire et vous, c'est le même point.">Révéler</button></div></div>
+</section>
+
+<section class="dense">
+  <h2 class="situ">Perdre 0,1 % de ce qu'on a.</h2>
+  <p class="ex">Avec 1 000 € sur le compte, c'est 1 €.</p>
+  <p class="question">Avec une grande fortune :</p>
+  <div class="groupe"><span class="nomg">Millionnaires</span>
+  <div class="ligne"><div class="k"><b>Bad Bunny</b></div><div class="v"><button class="cache" data-c="90 000 €" data-d="">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Kylian Mbappé</b></div><div class="v"><button class="cache" data-c="180 000 €" data-d="">Révéler</button></div></div>
+  </div>
+  <div class="groupe g2"><span class="nomg">Milliardaires</span>
+  <div class="ligne"><div class="k"><b>Xavier Niel</b></div><div class="v"><button class="cache" data-c="28 millions €" data-d="">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Bernard Arnault</b></div><div class="v"><button class="cache" data-c="125 millions €" data-d="">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Elon Musk</b></div><div class="v"><button class="cache" data-c="870 millions €" data-d="Presque un milliard. Pour lui, c'est la pièce qui tombe de la poche.">Révéler</button></div></div>
+  </div>
+</section>
+
+<section class="dense">
+  <h2 class="situ">Dépenser 1 million par jour, tous les jours.</h2>
+  <p class="question">Ruiné au bout de combien de temps ?</p>
+  <div class="groupe"><span class="nomg">Millionnaires</span>
+  <div class="ligne"><div class="k"><b>Bad Bunny</b></div><div class="v"><button class="cache" data-c="Dans trois mois" data-d="">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Kylian Mbappé</b></div><div class="v"><button class="cache" data-c="Dans six mois" data-d="">Révéler</button></div></div>
+  </div>
+  <div class="groupe g2"><span class="nomg">Milliardaires</span>
+  <div class="ligne"><div class="k"><b>Xavier Niel</b></div><div class="v"><button class="cache" data-c="Dans 77 ans" data-d="">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Bernard Arnault</b></div><div class="v"><button class="cache" data-c="Dans 340 ans" data-d="">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Elon Musk</b></div><div class="v"><button class="cache" data-c="Dans 2 400 ans" data-d="Pour être ruiné aujourd'hui, il aurait fallu commencer du temps de Platon.">Révéler</button></div></div>
+  </div>
+</section>
+
+<section class="dense">
+  <h2 class="situ">Tout placer à 3 % et vivre des intérêts, sans travailler.</h2>
+  <p class="precision">Intérêts simples, non cumulés.</p>
+  <p class="question">Ça rapporte, chaque jour :</p>
+  <div class="groupe"><span class="nomg">Millionnaires</span>
+  <div class="ligne"><div class="k"><b>Bad Bunny</b></div><div class="v"><button class="cache" data-c="7 400 € par jour" data-d="Cinq SMIC, chaque jour.">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Kylian Mbappé</b></div><div class="v"><button class="cache" data-c="14 800 € par jour" data-d="Dix SMIC, chaque jour.">Révéler</button></div></div>
+  </div>
+  <div class="groupe g2"><span class="nomg">Milliardaires</span>
+  <div class="ligne"><div class="k"><b>Xavier Niel</b></div><div class="v"><button class="cache" data-c="2,3 millions € par jour" data-d="130 ans de SMIC, chaque matin.">Révéler</button></div></div>
+  <div class="ligne"><div class="k"><b>Bernard Arnault</b></div><div class="v"><button class="cache" data-c="10 millions € par jour" data-d="580 ans de SMIC, chaque matin.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Elon Musk</b></div><div class="v"><button class="cache" data-c="71 millions € par jour" data-d="4 000 ans de SMIC chaque matin, en dormant.">Révéler</button></div></div>
+  </div>
+</section>
+
+<section class="dense fin3">
+  <h2 class="situ">53 personnes.</h2>
+  <p class="ex">Ce sont les milliardaires français, selon Oxfam (janvier 2026).</p>
+  <p class="question">À elles seules, elles possèdent autant que combien de Français réunis ?</p>
+  <div class="ligne un"><div class="k"><b>Autant que</b></div><div class="v"><button class="cache" data-c="Plus de 32 millions de personnes" data-d="Presque la moitié du pays.">Révéler</button></div></div>
+  <div class="ligne mi"><div class="k"><b>Depuis 2017, leur fortune a augmenté de</b></div><div class="v"><button class="cache" data-c="220 milliards €" data-d="Plus de 67 millions d'euros par jour, en moyenne, pendant neuf ans.">Révéler</button></div></div>
+</section>
+
+<section class="monde-live" id="mondeLive">
+  <h2 class="situ">En un an, les milliardaires du monde se sont enrichis de 4 000 milliards de dollars.</h2>
+  <p class="ex">Ils sont 3 428. Leur fortune réunie est passée de 16 100 à 20 100 milliards de dollars entre 2025 et 2026, selon Forbes.</p>
+  <p class="question">Au même rythme, depuis que vous êtes sur cet écran, ils ont gagné :</p>
+  <div class="live"><b id="liveEur">0 €</b><span id="liveSmic">&nbsp;</span></div>
+  <p class="lent">Plus de 110 000 € par seconde : plus de six ans de SMIC, chaque seconde.</p>
+</section>
+
+<section class="fin">
+  <h2>Un milliard, ce n'est pas « beaucoup plus ».<br>C'est une autre échelle.</h2>
+  <p>Dans le monde, 3 428 personnes vivent à cette échelle.</p>
+  <details class="note"><summary>Voir les sources</summary><div><b>Sources</b><h4>Inspiration</h4><ul class="src"><li><span>La bande à l'échelle, où chaque pixel vaut une somme, s'inspire de « Wealth shown to scale », de Matt Korostoff</span><small><a href="https://eattherichtextformat.github.io/1-pixel-wealth/" target="_blank" rel="noopener">eattherichtextformat.github.io/1-pixel-wealth</a></small></li></ul><h4>Les bases</h4><ul class="src"><li><span>SMIC net : 1 477,93 € par mois, 17 735 € par an</span><small>au 1er juin 2026</small></li><li><span>Un pas : 75 cm. Le cœur : 65 battements par minute</span><small>moyennes courantes</small></li><li><span>La Lune : 384 000 km de la Terre</span><small>distance moyenne</small></li><li><span>Intérêts à 3 % par an, simples, non cumulés</span><small>hypothèse du site</small></li><li><span>Dollars convertis à 1,12 $ pour 1 €, montants arrondis</span><small>taux utilisé partout</small></li></ul><h4>Les fortunes</h4><ul class="src"><li><span>Elon Musk : 977 milliards $</span><small>Forbes, 13 octobre 2026</small></li><li><span>Bernard Arnault : 142,1 milliards $, 9e fortune du monde</span><small>Forbes en temps réel, 27 juillet 2026</small></li><li><span>Bernard Arnault : 121,2 milliards €</span><small>Challenges, juillet 2026</small></li><li><span>Hausse record de sa fortune : 23,6 milliards $ en un jour</span><small>Forbes, 26 janvier 2024</small></li><li><span>Xavier Niel : 27,9 milliards €</span><small>Challenges, 2025</small></li><li><span>Kylian Mbappé : 180 à 200 millions $</span><small>estimations 2026</small></li><li><span>Bad Bunny : environ 100 millions $</span><small>Celebrity Net Worth, février 2026</small></li></ul><h4>Les milliardaires</h4><ul class="src"><li><span>53 milliardaires français possèdent plus que 32 millions de personnes réunies ; leur fortune a augmenté de plus de 220 milliards € depuis 2017</span><small>Oxfam France, janvier 2026, à partir des données de Forbes</small></li><li><span>3 428 milliardaires dans le monde, 20 100 milliards $ réunis, contre 16 100 milliards $ en 2025</span><small>Forbes, mars 2026</small></li><li><span>Populations : Chartres environ 38 000 habitants, Brest environ 140 000, Marseille environ 870 000</span><small>Insee</small></li></ul><h4>Ce que la fortune de Bernard Arnault pourrait payer</h4><ul class="src"><li><span>Institut national du cancer : 125,4 millions € par an</span><small>Sénat, 2025</small></li><li><span>Restos du cœur : 287,4 millions €, 161 millions de repas, 1,3 million de personnes</span><small>campagne 2024-2025</small></li><li><span>5,6 millions de personnes inscrites à l'aide alimentaire</span><small>Cour des comptes, 2025</small></li><li><span>Part de la France au Fonds mondial : 660 millions € pour 2026-2028</span><small>Assemblée nationale</small></li><li><span>Nouveau CHU de Nantes : environ 1,25 milliard €, 1 527 lits</span><small>Nantes Métropole</small></li><li><span>Hébergement d'urgence : 3,1 milliards € par an</span><small>projet de loi de finances 2026, Sénat</small></li><li><span>350 000 personnes sans domicile en France</span><small>Fondation pour le logement des défavorisés, 2026</small></li><li><span>Cantine gratuite pour tous : 7 à 9 milliards € par an</span><small>Haut Conseil de la famille, 2024</small></li><li><span>Sortir tout le monde de la pauvreté : 26 milliards € par an</span><small>OFCE, 2026</small></li><li><span>9,8 millions de personnes pauvres, 15,4 % de la population, seuil à 1 337 € par mois</span><small>Insee, données 2024</small></li><li><span>Coût de la pauvreté pour la société : 118 milliards € par an</span><small>collectif Alerte, 2024</small></li><li><span>Dette des hôpitaux publics : environ 30 milliards €. Déficit : 2,3 milliards en 2025, 2,9 en 2024</span><small>Drees, 2025</small></li><li><span>72 % des hôpitaux publics en déficit, 26,7 ans pour rembourser la dette, résultat financier de -877 millions €, investissements de 5,5 milliards €, plans Hôpital 2007 et 2012</span><small>Drees, Les établissements de santé, édition 2026</small></li><li><span>Plus d'un tiers des postes de praticien hospitalier titulaire vacants (34,8 %)</span><small>Centre national de gestion, janvier 2025</small></li><li><span>Paludisme : 95 % des morts en Afrique, trois sur quatre chez les moins de 5 ans, 170 millions de cas et un million de morts évités en 2024, 3,9 milliards $ investis pour 9,3 visés, 47 pays certifiés sans paludisme</span><small>OMS, décembre 2025</small></li><li><span>Moustiquaire imprégnée : environ 2 $</span><small>Against Malaria Foundation</small></li><li><span>Vaccin contre le paludisme : 2,99 $ la dose</span><small>Unicef et Gavi, novembre 2025</small></li><li><span>Cantine : plus d'un milliard de repas par an, environ 600 € par an pour une famille, gratuite dans moins de 1 % des communes</span><small>Haut Conseil de la famille, 2024</small></li><li><span>Cantine à 1 € : 3 € versés par l'État par repas, 193 000 élèves en 2024</span><small>Sénat, réponse du 22 janvier 2026</small></li><li><span>Pauvreté : 22,4 % des moins de 18 ans, 34 % des familles monoparentales, 2,3 millions de travailleurs pauvres, taux au plus haut depuis 1996</span><small>Insee, données 2024</small></li></ul><h4>Dans le monde</h4><ul class="src"><li><span>Paludisme : 5,4 milliards $ manquent chaque année, 282 millions de malades, 610 000 morts en 2024</span><small>OMS, 2025</small></li></ul><p class="calc">Les comparaisons (nombre d'années, de campagnes, de vies au SMIC…) sont calculées à partir de ces chiffres.</p><button class="fermer" onclick="this.closest('details').open=false">Fermer</button></div></details>
+</section>
+
+</main>
+
+<script>
+document.querySelectorAll('.question').forEach(q=>{q.innerHTML='<span class="q">'+q.innerHTML.replace(/(\p{L})-(\p{L})/gu,'$1‑$2')+'</span>';});
+
+(function(){const f=t=>t.replace(/(\d) (?=\d{3}\b)/g,'$1\u202f').replace(/(\d) (?=(€|%|\$|ans?\b|millions?|milliards?|mois|jours?|écrans?|lits?|m²|fois))/g,'$1\u00a0').replace(/ ([?:;!»])/g,'\u00a0$1').replace(/« /g,'«\u00a0');const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(n.parentNode.closest('script,style'))continue;const v=f(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;}document.querySelectorAll('[data-c],[data-d]').forEach(b=>{if(b.dataset.c)b.dataset.c=f(b.dataset.c);if(b.dataset.d)b.dataset.d=f(b.dataset.d);});})();
+
+const secs=[...document.querySelectorAll('section')];
+document.getElementById('tot').textContent=secs.length;
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)document.getElementById('n').textContent=secs.indexOf(e.target)+1;});},{threshold:.55});
+secs.forEach(s=>io.observe(s));
+document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.parentElement;
+  v.innerHTML='<div class="chiffre">'+b.dataset.c+'</div>'+(b.dataset.d?'<div class="detail">'+b.dataset.d+'</div>':'');
+  v.classList.add('rev');
+}));
+// ligne à l'échelle qui s'éloigne
+(function(){
+  const cv=document.getElementById('echelle'),c=cv.getContext('2d');
+  const SMIC=17735,M=1e6,G=1e9,marge=24;
+  let W,H,dpr;
+  function taille(){dpr=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;c.setTransform(dpr,0,0,dpr,0,0);}
+  const css=()=>getComputedStyle(document.documentElement),col=v=>css().getPropertyValue(v).trim();
+  // ppe : pixels par euro. Départ : un an de SMIC occupe 55 % de la largeur. Arrivée : 1 000 € par pixel.
+  let ppe0,ppe1,ppe,offset=0,t=0,etat='attente',last=0;
+  const DUREE=7;
+  const reperes=[{e:0,l:'0 €'},{e:1000,l:'1 000 €'},{e:SMIC,l:'un an de SMIC, 17 735 €'},{e:M,l:'1 million',acc:true},{e:G,l:'1 milliard, 800 écrans plus loin',acc:true}];
+  function init(){taille();ppe0=W*0.55/SMIC;ppe1=W*0.8/M;ppe=ppe0;offset=0;t=0;etat='attente';document.getElementById('zoomEtat').textContent="la ligne s'éloigne";}
+  function x(e){return marge+(e-offset)*ppe;}
+  function draw(){
+    c.fillStyle=col('--bg');c.fillRect(0,0,W,H);
+    const ink=col('--ink'),mute=col('--mute'),acc=col('--accent'),y=56;
+    c.fillStyle=ink;c.fillRect(0,y,W,2);
+    // graduations fines : tous les 1 000 € quand c'est lisible, sinon tous les 100 000
+    const pas=ppe*1000>6?1000:ppe*100000>6?100000:0;
+    if(pas){c.globalAlpha=.7;const d0=Math.floor(offset/pas)*pas;for(let e=d0;x(e)<W;e+=pas){const px=x(e);if(px<marge-1)continue;c.fillRect(px,y,1.5,11);}c.globalAlpha=1;}
+    // un grand trait et un nombre à chaque million : on voit qu'on avance
+    if(ppe*1e6>80){c.font='600 14px '+getComputedStyle(document.body).fontFamily;c.textBaseline='top';c.textAlign='left';
+      for(let e=Math.max(Math.ceil(offset/1e6)*1e6,2e6);e<G&&x(e)<W+80;e+=1e6){const px=x(e);if(px<marge+20||Math.abs(x(G)-px)<320)continue;
+        c.fillStyle=ink;c.fillRect(px-1,y-10,2,30);}}
+    let rangee=0,dernierX=-1e9;
+    for(const r of reperes){
+      const px=x(r.e);if(px<-4||px>W+4)continue;
+      c.fillStyle=r.acc?acc:ink;c.fillRect(px-1,y-(r.acc?16:12),2,r.acc?34:26);
+      // étiquette : on alterne la hauteur si deux étiquettes sont proches
+      rangee=(px-dernierX<170)?(rangee+1)%3:0;dernierX=px;
+      c.font=(r.acc?'600 ':'400 ')+'13px '+getComputedStyle(document.body).fontFamily;c.fillStyle=r.acc?acc:mute;c.textBaseline='top';
+      const droite=px>W*0.6;c.textAlign=droite?'right':'left';
+      c.fillText(r.l,px+(droite?-8:8),y+30+rangee*18);
+    }
+    c.fillStyle=acc;c.beginPath();c.arc(marge,y+1,4,0,7);c.fill();
+    document.getElementById('zoomPos').textContent=Math.round(offset).toLocaleString('fr-FR')+' €';
+    commenter();
+  }
+  // ce qu'on dit pendant qu'on avance : le million arrive tout de suite, le milliard est très loin
+  const zCom=document.getElementById('zoomCom'),zTraj=document.getElementById('zoomTrajet');let zDernier='';
+  function commenter(){
+    const pr=offset/G,ecran=Math.floor(offset*ppe1/W)+1;let t,tr='';
+    if(etat!=='libre')t='La ligne recule : 1 000 €, puis un an de SMIC, puis le million.';
+    else{
+      tr=`écran ${Math.min(800,ecran).toLocaleString('fr-FR')} sur 800 · ${(pr*100).toLocaleString('fr-FR',{maximumFractionDigits:pr<0.1?1:0})} % du chemin jusqu'au milliard`;
+      const mm=offset/1e6,reste=Math.max(0,Math.ceil((G-offset)*ppe1/W)),depuis=Math.max(0,Math.floor((offset-M)*ppe1/W));
+      const C=[
+        [0.9,'Le million est déjà là, sur ce premier écran. Le milliard est 800 écrans plus loin, vers la droite.'],
+        [3,'Le million est passé. Il tenait sur le tout premier écran.'],
+        [8,'À ce stade, on pourrait déjà vivre toute sa vie sans travailler.'],
+        [20,'Même avec un salaire d\'un million par an, il faudrait mille ans pour arriver au bout.'],
+        [40,'Au-delà d\'un certain point, tout devient juste « beaucoup ».'],
+        [70,()=>`À un écran par seconde, il faudrait encore ${Math.round(reste/60)} minutes pour arriver au bout.`],
+        [160,'Quelqu\'un qui gagne 100 000 € par an, ce qui est déjà rare, mettrait 10 000 ans à parcourir cette ligne.'],
+        [520,'La moitié. Il reste devant autant de chemin que derrière.'],
+        [580,'Un milliard, c\'est la plus petite fortune qu\'un milliardaire puisse avoir.'],
+        [640,'Gagner 1 000 € de l\'heure, jour et nuit, sans jamais dormir : il faudrait 114 ans pour faire un milliard.'],
+        [700,()=>`Déjà ${Math.min(800,ecran).toLocaleString('fr-FR')} écrans. Le million tenait dans le premier.`],
+        [740,'Ce chemin, c\'est la distance entre un millionnaire et un milliardaire.'],
+        [780,'Quelqu\'un qui aurait mis 1 000 € de côté chaque jour depuis la naissance de Jésus aurait aujourd\'hui à peu près cette somme. Pas encore un milliard.'],
+        [880,'La fortune d\'Elon Musk ferait 870 fois cette ligne. Aucune vie ne suffirait à dépenser une telle somme.'],
+        [950,()=>`Encore ${reste.toLocaleString('fr-FR')} écrans. Le million, c'était il y a ${depuis.toLocaleString('fr-FR')} écrans.`],
+        [990,'Le premier million semblait déjà énorme.'],
+      ];
+      const ligne=C.find(c=>mm<c[0]);
+      t=ligne?(typeof ligne[1]==='function'?ligne[1]():ligne[1]):'Un milliard.';
+    }
+    if(t+tr!==zDernier){zDernier=t+tr;zCom.textContent=t;zTraj.textContent=tr;}
+  }
+  function tick(now){
+    const dt=Math.min(.1,(now-last)/1000)||0;last=now;
+    if(etat==='zoom'){t=Math.min(1,t+dt/DUREE);const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;ppe=Math.exp(Math.log(ppe0)+(Math.log(ppe1)-Math.log(ppe0))*e);
+      if(t>=1){etat='libre';document.getElementById('zoomEtat').textContent='faites défiler la ligne vers la droite, le milliard est à 800 écrans';}}
+    draw();requestAnimationFrame(tick);
+  }
+  init();requestAnimationFrame(tick);
+  addEventListener('resize',()=>{taille();ppe0=W*0.55/SMIC;ppe1=W*0.8/M;if(etat==='attente')ppe=ppe0;if(etat==='libre')ppe=ppe1;});
+  // démarre quand l'écran est visible
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&etat==='attente'){etat='zoom';t=0;}});},{threshold:.5}).observe(document.getElementById('zoom'));
+  document.getElementById('zoomRejouer').onclick=()=>{init();etat='zoom';};
+  // défilement à la main une fois arrivé
+  function bouge(dx){if(etat!=='libre')return;offset=Math.max(0,Math.min(G,offset-dx/ppe));}
+  cv.addEventListener('wheel',e=>{if(etat!=='libre')return;e.preventDefault();bouge(-(e.deltaX||e.deltaY));},{passive:false});
+  let d=null;cv.addEventListener('pointerdown',e=>{d=e.clientX;cv.setPointerCapture(e.pointerId);});cv.addEventListener('pointermove',e=>{if(d===null)return;bouge(e.clientX-d);d=e.clientX;});cv.addEventListener('pointerup',()=>d=null);cv.addEventListener('pointercancel',()=>d=null);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ppe=ppe1;etat='libre';document.getElementById('zoomEtat').textContent='faites défiler la ligne vers la droite, le milliard est à 800 écrans';}
+})();
+document.querySelectorAll('.bande').forEach(b=>{
+  const u=+b.dataset.unite,out=b.parentElement.querySelector('.lecture b');
+  b.addEventListener('scroll',()=>{out.textContent=Math.round(b.scrollLeft*u).toLocaleString('fr-FR')+' €';},{passive:true});
+  let d=null;b.addEventListener('pointerdown',e=>{d=e.clientX;});b.addEventListener('pointermove',e=>{if(d===null)return;b.scrollLeft-=e.clientX-d;d=e.clientX;});addEventListener('pointerup',()=>d=null);
+});
+const bt=document.getElementById('theme');
+bt.onclick=()=>{const d=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=d?'light':'dark';bt.textContent=d?'Sombre':'Clair';};
+
+// ---- révélation façon 3A : tout se révèle, rien ne part tout seul ----
+(function(){
+  document.querySelectorAll('section').forEach(sec=>{
+    const ls=[...sec.querySelectorAll('.ligne')];if(!ls.length)return;
+    ls.forEach((l,k)=>{
+      const v=l.querySelector('.v'),b=v.querySelector('.cache');
+      if(b){v.innerHTML='<div class="chiffre">'+b.dataset.c+'</div>'+(b.dataset.d?'<div class="detail">'+b.dataset.d+'</div>':'');}
+      if(!l.classList.contains('mi')&&ls[k+1]&&ls[k+1].classList.contains('mi')&&ls.length<=5)l.classList.add('grand');
+      l.addEventListener('click',e=>{e.stopPropagation();reveler(l);});
+    });
+    sec.addEventListener('click',()=>{const l=ls.find(x=>!x.classList.contains('on'));if(l)reveler(l);});
+  });
+  window.__ajuster=ajuster;
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>document.querySelectorAll('section').forEach(x=>{if(x.querySelector('.ligne.on'))ajuster(x);}));
+  // quand une réponse s'ouvre, elle grandit : on réajuste l'écran pour qu'elle tienne
+  document.addEventListener('click',e=>{const c=e.target.closest('.cache'),sec=c&&c.closest('section');if(sec){setTimeout(()=>ajuster(sec),30);setTimeout(()=>ajuster(sec),500);}},true);
+  function ajuster(sec){ // tout doit tenir dans l'écran : on tasse d'abord les lignes ordinaires, puis le milliard
+    let f=1,fa=1,fh=1;['--f','--fa','--fh'].forEach(v=>sec.style.setProperty(v,1));
+    const deborde=()=>{const last=sec.lastElementChild;const pb=parseFloat(getComputedStyle(sec).paddingBottom);return last.getBoundingClientRect().bottom-sec.getBoundingClientRect().top+pb>innerHeight+1;};
+    // sur ordinateur, une réponse ne passe pas à la ligne : on réduit sa taille jusqu'à ce qu'elle tienne
+    const coupe=sel=>innerWidth>640&&[...sec.querySelectorAll(sel)].some(c=>c.offsetParent&&c.getClientRects().length>0&&(c.scrollWidth>c.clientWidth+1||c.getBoundingClientRect().height>parseFloat(getComputedStyle(c).fontSize)*1.45));
+    while(coupe('.ligne.mi .chiffre')&&fa>0.3){fa-=0.04;sec.style.setProperty('--fa',fa);}
+    while(coupe('.ligne:not(.mi) .chiffre')&&f>0.5){f-=0.04;sec.style.setProperty('--f',f);}
+    while(deborde()&&f>0.5){f-=0.05;sec.style.setProperty('--f',f);}
+    while(deborde()&&fh>0.6){fh-=0.05;sec.style.setProperty('--fh',fh);}
+    while(deborde()&&fa>0.55){fa-=0.05;sec.style.setProperty('--fa',fa);}
+  }
+  function reveler(l){if(l.classList.contains('on'))return;l.classList.add('on');ajuster(l.closest('section'));}
+  let cur=null;const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)cur=e.target;}),{threshold:.55});
+  document.querySelectorAll('section').forEach(x=>io.observe(x));
+  addEventListener('keydown',e=>{if(e.code!=='Space'||!cur)return;const l=[...cur.querySelectorAll('.ligne')].find(x=>!x.classList.contains('on'));if(l){e.preventDefault();reveler(l);}});
+  addEventListener('resize',()=>document.querySelectorAll('section').forEach(x=>{if(x.querySelector('.ligne.on'))ajuster(x);}));
+})();
+
+// ---- l'échelle, puis la fortune de Bernard Arnault : 1 pixel carré = 1 000 €, on avance en faisant défiler ----
+(function(){
+  const sec=document.getElementById('arnault'),piste=document.getElementById('piste'),monde=document.getElementById('monde'),info=document.getElementById('aInfo');
+  const TOTAL=125e9;
+  const fr=(n,d=0)=>n.toLocaleString('fr-FR',{maximumFractionDigits:d});
+  function eur(n){const m=n/1e6,g=n/1e9;if(n<1e6)return fr(Math.round(n))+' €';if(n<1e9)return fr(m,m<100&&Math.round(m*10)%10?1:0)+' million'+(n>=2e6?'s':'')+' €';return fr(g,g<100&&Math.round(g*10)%10?1:0)+' milliard'+(n>=2e9?'s':'')+' €';}
+
+  const intro=[
+    {t:'Ici, chaque pixel carré vaut 1 000 €.'},
+    {v:1000,l:'1 000 €',c:'--ink'},
+    {v:17735,l:'Un an de SMIC : 17 735 €',c:'--b1'},
+    {v:798000,l:'Le SMIC toute une vie : 798 000 €',c:'--b2'},
+    {v:1e6,l:'Un million',c:'--accent'},
+    {t:'Un milliard, c\'est mille fois ce carré.'},
+    {v:1e9,l:'Un milliard',c:'--b3',grand:1,d:'Il faut déjà faire défiler pour le voir en entier.'},
+    {t:'La fortune de Bernard Arnault, c\'est <b>125 milliards</b>. La voici, à la même échelle.'},
+  ];
+  const items=[
+    {v:125e6,l:'Un an de budget de l\'Institut national du cancer',c:'--b1',d:'Ce bloc paie un an entier de l\'Institut national du cancer.',x:['Près des deux tiers de ce budget vont à la recherche.']},
+    {v:287e6,l:'Une campagne entière des Restos du cœur',c:'--b2',d:'161 millions de repas et 1,3 million de personnes accueillies, sur toute la campagne 2024-2025.',x:['Environ 1,80 € par repas servi.','En France, 5,6 millions de personnes sont inscrites à l\'aide alimentaire.']},
+    {v:660e6,l:'La part de la France au Fonds mondial, pour trois ans',c:'--b3',d:'Ce que la France donne de 2026 à 2028 contre le sida, la tuberculose et le paludisme.',x:[]},
+    {v:1.25e9,l:'Un hôpital neuf de 1 527 lits, comme le futur CHU de Nantes',c:'--b1',d:'Ce bloc paie un seul hôpital : l\'un des plus gros chantiers de France, ouverture prévue en 2028.',x:['Le chantier revient à environ 820 000 € par lit, bâtiment et équipements compris.']},
+    {v:3.1e9,l:'Un an d\'hébergement d\'urgence en France',c:'--b2',d:'Ce bloc paie un an d\'hébergement d\'urgence : ce que l\'État dépense pour mettre à l\'abri les personnes à la rue.',x:['350 000 personnes sont sans domicile en France.','Rapporté à ces 350 000 personnes, cela fait environ 8 900 € par personne et par an.']},
+    {v:4.8e9,l:'Un an de ce qui manque dans le monde contre le paludisme',c:'--b3',d:'Il manque environ 5,4 milliards de dollars par an pour combattre le paludisme, selon l\'OMS. Ce bloc comble ce manque pendant un an.',x:['En 2024, le paludisme a tué 610 000 personnes. 95 % de ces morts surviennent en Afrique.','En Afrique, trois morts du paludisme sur quatre sont des enfants de moins de cinq ans.','282 millions de malades en un an.','Une moustiquaire imprégnée coûte environ 2 dollars.','Une dose de vaccin contre le paludisme va passer à 2,99 dollars.','En 2024, les moustiquaires, les traitements et les vaccins ont évité 170 millions de cas et un million de morts.','Le monde a mis 3,9 milliards de dollars contre le paludisme en 2024, pour un objectif de 9,3 milliards.','47 pays sont aujourd\'hui certifiés sans paludisme.']},
+    {v:8e9,l:'La cantine gratuite pour tous les élèves de France, pendant un an',c:'--b1',d:'Ce bloc paie la cantine de tous les élèves de France pendant un an. Le Haut Conseil de la famille l\'estime à 7 à 9 milliards d\'euros par an.',x:['Plus d\'un milliard de repas sont servis chaque année à la cantine.','La cantine d\'un écolier coûte en moyenne environ 600 € par an à sa famille.','Moins de 1 % des communes offrent la cantine gratuite.','Avec la cantine à 1 €, l\'État verse 3 € par repas. 193 000 élèves en ont profité en 2024.','Plus aucune famille ne paierait la cantine cette année-là.']},
+    {v:26e9,l:'Sortir tout le monde de la pauvreté en France, pendant un an',c:'--b2',d:'9,8 millions de personnes vivent sous le seuil de pauvreté en France.',x:['C\'est 15,4 % de la population, le taux le plus haut depuis le début des mesures, en 1996.','Le seuil de pauvreté, c\'est 60 % du niveau de vie médian : 1 337 € par mois pour une personne seule.','Plus d\'un enfant sur cinq est pauvre : 22,4 % des moins de 18 ans.','Plus d\'une famille monoparentale sur trois vit sous le seuil de pauvreté.','2,3 millions de personnes qui travaillent sont pauvres.','Les faire toutes passer au-dessus du seuil pendant un an coûterait environ 26 milliards, selon l\'OFCE. C\'est ce que paie ce bloc.','La pauvreté coûte à la société 118 milliards par an, selon le collectif Alerte.']},
+    {v:30e9,l:'Effacer toute la dette des hôpitaux publics',c:'--b3',d:'Ce bloc efface toute la dette des hôpitaux publics : environ 30 milliards d\'euros.',x:['En 2025, les hôpitaux publics ont perdu 2,3 milliards. En 2024, c\'était un record : 2,9 milliards de déficit.','72 % des hôpitaux publics sont en déficit.','Au rythme actuel, il leur faudrait 26,7 ans pour rembourser leur dette, un record.','Chaque année, ils paient environ 877 millions d\'euros d\'intérêts de plus qu\'ils n\'en touchent.','Leurs investissements sont tombés à 5,5 milliards d\'euros en 2024.','Plus d\'un poste de médecin hospitalier titulaire sur trois est vacant.','Cette dette vient en partie des plans Hôpital 2007 et Hôpital 2012, qui ont poussé les hôpitaux à emprunter pour se moderniser.']},
+  ];
+  const paye=items.reduce((a,o)=>a+o.v,0);
+  const reste=[
+    {t:()=>`Tout cela payé, il lui resterait encore <b>${eur(TOTAL-paye)}</b>.`},
+    {t:()=>`Placé à 3 % par an, sans réinvestir les intérêts, ce reste lui rapporterait environ ${eur(Math.round((TOTAL-paye)*0.03/1e8)*1e8)} par an : ${eur(Math.round((TOTAL-paye)*0.03/365/1e5)*1e5)} par jour.`},
+    {t:()=>'Le 26 janvier 2024, sa fortune a pris 23,6 milliards de dollars en une seule journée, selon Forbes.'},
+    {t:()=>'Vous êtes toujours dans la fortune de Bernard Arnault.'},
+  ];
+
+  let W=0,longueur=0,xF=0,LF=0,B=0,pos=[];
+  // espace insécable avant ? : ; ! et autour des guillemets, pour qu'un signe ne parte jamais seul à la ligne
+  // un nombre ne se coupe jamais (193 000), l'unité reste collée au nombre, et le signe reste collé au mot
+  const insec=h=>h.replace(/(\d) (?=\d{3}\b)/g,'$1\u202f').replace(/(\d) (?=(€|%|\$|ans?\b|millions?|milliards?|mois|jours?|écrans?|lits?|m²))/g,'$1\u00a0').replace(/ ([?:;!»])/g,'\u00a0$1').replace(/« /g,'«\u00a0');
+  // deux phrases : une par ligne
+  const lignesP=h=>h.replace(/([.?]) (?=[A-ZÀÂÉÈÊÎÔÛÇ0-9])/g,'$1<br>');
+  function el(cls,html,st){const d=document.createElement('div');d.className=cls;if(html!=null)d.innerHTML=insec(/\btxt\b/.test(cls)?lignesP(html):html);Object.assign(d.style,st);monde.appendChild(d);return d;}
+  function construire(){
+    monde.innerHTML='';pos=[];
+    W=piste.clientWidth;const H=piste.clientHeight,tel=W<640;
+    B=Math.round(Math.min(520,H*0.82));const yb=Math.round((H-B)/2);
+    const tw=Math.min(380,W-56);                 // largeur d'un texte
+    const marge=Math.max(48,W*0.12);
+    const texte=(x,html)=>{el('txt',html,{left:x+'px',width:tw+'px',top:(yb+B/2)+'px',transform:'translateY(-50%)'});return x+tw;};
+    let x=Math.round(W*0.12);
+    // ---- l'échelle ----
+    for(const o of intro){
+      if(o.t){x=texte(x,o.t)+marge;continue;}
+      const a=o.v/1000;
+      if(o.grand){const w=Math.round(a/B);
+        const d=el('obj',null,{left:x+'px',top:yb+'px',width:w+'px',height:B+'px',background:`var(${o.c})`});d.innerHTML=`<span class="nom">${o.l}</span>`;
+        el('txt',o.d,{left:(x+Math.min(w*0.45,W*0.5))+'px',width:Math.min(tw,320)+'px',bottom:(yb+28)+'px'}).style.top='';
+        x+=w+marge;continue;}
+      const s=Math.max(1,Math.round(Math.sqrt(a)));const lw=tel?110:170;
+      el('',null,{left:x+'px',top:(yb+B-s)+'px',width:s+'px',height:s+'px',background:`var(${o.c})`});
+      if(o.v===1000){ // le point des 1 000 € : on clique, une loupe s'ouvre à partir du point lui-même
+        const d=tel?110:130,cx=x+0.5,cy=yb+B-0.5;
+        const et=el('eti',`<button type="button" class="vers-loupe">1 000 € <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15 15l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`,{left:(x-6)+'px',width:lw+'px',bottom:(H-(yb+B-s)+6)+'px'});
+        const len=el('lentille',`<span class="carre"></span>`,{left:(cx-d/2)+'px',top:(cy-d/2)+'px',width:d+'px',height:d+'px'});
+        const leg=el('eti leg-loupe','Le point des 1 000 €, vu 30 fois plus grand. Cliquez pour refermer.',{left:(cx-(tel?70:95))+'px',bottom:(H-(cy-d/2)+10)+'px',width:(tel?140:190)+'px',textAlign:'center'});
+        const basculer=e=>{e.stopPropagation();const o=len.classList.toggle('ouverte');leg.classList.toggle('vue',o);};
+        et.querySelector('button').onclick=basculer;len.onclick=basculer;
+      }else el('eti',o.l,{left:x+'px',width:lw+'px',bottom:(H-(yb+B-s)+8)+'px'});
+      x+=Math.max(s,lw)+marge*0.6;
+    }
+    x+=marge*0.4;
+    // ---- la fortune ----
+    xF=x;LF=Math.round(TOTAL/1000/B);
+    el('bandeF',null,{left:xF+'px',top:yb+'px',width:LF+'px',height:B+'px'});
+    el('eti borne','Début de la fortune de Bernard Arnault',{left:(xF)+'px',width:(tel?260:600)+'px',bottom:(H-yb+10)+'px'});
+    let c=xF+marge;
+    c=texte(c,'Que pourrait-on faire en France avec cette fortune ?')+marge;
+    const hI=Math.round(B*0.68);                 // les choses payées sont plus basses que la bande : on voit la fortune au-dessus
+    for(const o of items){
+      const w=Math.max(1,Math.round(o.v/1000/hI));
+      const d=el('obj',`<span class="nom paye" style="max-width:${Math.max(120,Math.min(w-28,W-40,tel?260:380))}px"><strong>${o.l}</strong><span class="cout">${o.v>=1e9&&o.v<1e10?fr(o.v/1e9,2)+" milliard"+(o.v>=2e9?"s":"")+" €":eur(o.v)}</span></span><div class="pave" style="height:${hI}px;background:var(${o.c})"></div><div class="grad" style="--p:${1e8/1000/hI}px;--m:${1e9/1000/hI}px"></div>`,{left:c+'px',top:yb+'px',width:w+'px',height:B+'px'});
+      pos.push({x:c,w,v:o.v});
+      const txts=[o.d,...(o.x||[])];
+      if(w>tw+2*marge+60){ // les textes tiennent dans le bloc coloré, bien espacés
+        // chaque texte reste à l'écran pendant qu'on traverse sa portion du bloc, puis laisse la place au suivant
+        const x0=c+Math.min(w-tw-marge,Math.max(marge,W*0.45)),x1=c+w-marge;
+        const n=Math.max(1,Math.min(txts.length,Math.floor((x1-x0)/(tw+marge*2))));
+        const lg=(x1-x0)/n,colle=Math.round(Math.max(20,W*0.5-tw/2));
+        const ecart=Math.round(Math.min(W*0.6,lg-tw-40)); // espace laissé entre un texte qui sort et le suivant
+        for(let i=0;i<n;i++){const sg=el('seg',null,{left:(x0+i*lg)+'px',width:(lg-ecart)+'px',bottom:(yb+60)+'px'});
+          const t=el('txt',txts[i],{position:'sticky',left:colle+'px',width:tw+'px'});sg.appendChild(t);}
+        // repères dans les grands blocs : où on en est
+        if(o.v>=2e9){const mil=1e9/1000/hI,tot=Math.round(o.v/1e9);
+          for(let k=1;k<tot;k++)el('repere',`${k} milliard${k>1?'s':''} sur ${tot}`,{left:(c+k*mil)+'px',top:(yb+B-hI+12)+'px'});}
+        c+=w+marge*2;
+      }else{ // bloc trop court pour étaler les textes : on les empile dans le bloc, l'un au-dessus de l'autre
+        el('txt pile',txts.map(t=>`<p>${t}</p>`).join(''),{left:(c+14)+'px',width:Math.max(60,w-28)+'px',bottom:(yb+52)+'px'});
+        c+=w+marge*2;
+      }
+    }
+    const fin=xF+LF;const nR=Math.max(1,Math.min(reste.length,Math.floor((fin-c-300)/(tw+marge*2))));const pas=Math.max(tw+marge*2,(fin-c-W)/nR);
+    reste.slice(0,nR).forEach((r,i)=>texte(c+marge+i*pas,r.t()));
+    window.__finItems=c;window.__finBande=fin;
+    {const mil=1e9/1000/B;for(let g=Math.ceil((c-xF)/mil)+1;g<125;g++)el('repere',`${g} milliards parcourus sur 125`,{left:(xF+g*mil)+'px',top:(yb+12)+'px'});}
+    el('eti borne','Fin de la fortune de Bernard Arnault',{left:(fin-(tel?260:600))+'px',width:(tel?260:600)+'px',textAlign:'right',bottom:(H-yb+10)+'px'});
+    let xe=fin+marge;xe=texte(xe,'Bernard Arnault est la 9<sup>e</sup> personne la plus riche du monde. Huit personnes ont donc encore plus que lui.')+marge;xe=texte(xe,'La fortune d\'Elon Musk, la plus grande du monde, ferait une bande sept fois plus longue que celle-ci.')+W*0.4;
+    longueur=xe;monde.style.width=longueur+'px';
+    dernierTexte='';maj();
+  }
+  const numero=document.getElementById('n'),indice=[...document.querySelectorAll('section')].indexOf(sec)+1;
+  let dernierTexte='',demande=false,dedans=false;
+  function maj(){
+    demande=false;
+    const r=sec.getBoundingClientRect();
+    const p=piste.scrollLeft;
+    if(r.top<innerHeight*0.5&&r.bottom>innerHeight*0.5&&numero)numero.textContent=indice;
+    const centre=p+W/2;let t;
+    if(centre<xF)t='';
+    else{let deja=0;for(const o of pos){deja+=o.v*Math.max(0,Math.min(1,(centre-o.x)/o.w));}
+      t=`<span class="cpt"><small>Déjà payé avec sa fortune</small><b>${eur(deja)}</b></span><span class="cpt reste"><small>Il lui resterait</small><b>${eur(TOTAL-deja)}</b></span>`;}
+    if(t!==dernierTexte){dernierTexte=t;info.innerHTML=t;}
+  }
+  const demander=()=>{if(!demande){demande=true;requestAnimationFrame(maj);}};
+  piste.addEventListener('scroll',demander,{passive:true});addEventListener('scroll',demander,{passive:true});
+  let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(construire,150);});
+  // à la souris : on attrape la bande et on la fait glisser ; la molette verticale fait descendre la page normalement
+  let prise=null;
+  piste.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.target.closest('button,.lentille'))return;prise={x:e.clientX,s:piste.scrollLeft};piste.classList.add('prise');piste.setPointerCapture(e.pointerId);});
+  piste.addEventListener('pointermove',e=>{if(!prise)return;piste.scrollLeft=prise.s-(e.clientX-prise.x);});
+  const lacher=()=>{prise=null;piste.classList.remove('prise');};piste.addEventListener('pointerup',lacher);piste.addEventListener('pointercancel',lacher);
+  // la molette avec Maj fait aussi glisser
+  piste.addEventListener('wheel',e=>{if(e.shiftKey&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();piste.scrollLeft+=e.deltaY;}},{passive:false});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(construire);construire();
+})();
+
+// ---- le compteur des milliardaires du monde : +4 000 milliards $ en un an, soit environ 113 000 € par seconde ----
+(function(){
+  const sec=document.getElementById('mondeLive');if(!sec)return;
+  const PARSEC=4e12/1.12/(365.25*86400),SMIC=17735,out=document.getElementById('liveEur'),sm=document.getElementById('liveSmic');
+  let t0=null,acc=0,vis=false;
+  new IntersectionObserver(es=>es.forEach(e=>{vis=e.isIntersecting;if(vis)t0=performance.now();else if(t0!==null){acc+=(performance.now()-t0)/1000;t0=null;}}),{threshold:.6}).observe(sec);
+  function tick(now){if(vis&&t0!==null){const t=acc+(now-t0)/1000,e=t*PARSEC;out.textContent=Math.round(e).toLocaleString('fr-FR')+' €';const a=e/SMIC;sm.textContent=a<1?'':`soit ${a.toLocaleString('fr-FR',{maximumFractionDigits:0})} an${a>=2?'s':''} de SMIC`;}requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
+})();
+
+// la fenêtre des sources se ferme aussi en cliquant à côté, ou avec Échap
+(function(){
+  const d=document.querySelector('details.note');if(!d)return;
+  document.addEventListener('click',e=>{if(d.open&&!e.target.closest('details.note>div')&&!e.target.closest('details.note>summary')){d.open=false;e.stopPropagation();}},true);
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&d.open)d.open=false;});
+})();
+// la flèche disparaît dès qu'on a commencé à faire défiler
+(function(){
+  const fz=document.getElementById('flecheZ'),fa=document.getElementById('flecheA'),pis=document.getElementById('piste'),pos=document.getElementById('zoomPos');
+  const placer=()=>{const cv=document.getElementById('echelle');if(fz&&cv)fz.style.top=(innerWidth>640?cv.offsetTop+74:cv.offsetTop+30-fz.offsetHeight)+'px';if(fa&&pis){const yb=parseFloat((document.querySelector('#monde .bandeF')||{style:{}}).style.top)||60;fa.style.top=(pis.offsetTop+pis.clientHeight*0.36-fa.offsetHeight/2)+'px';}};
+  placer();addEventListener('resize',()=>setTimeout(placer,200));if(document.fonts)document.fonts.ready.then(placer);setTimeout(placer,500);
+  if(fz){fz.classList.add('cachee');setInterval(()=>{const v=parseInt((pos.textContent||'0').replace(/\D/g,''))||0;const libre=!/s'éloigne/.test(document.getElementById('zoomEtat').textContent);fz.classList.toggle('cachee',!(libre&&v<1500000));},300);}
+  if(fa&&pis){const m=()=>fa.classList.toggle('cachee',pis.scrollLeft>200);pis.addEventListener('scroll',m,{passive:true});m();}
+})();
+
+// choix de la police : on change seulement les familles, puis on recale les écrans
+(function(){
+  const N={"0": "Actuelle : Schibsted Grotesk + Public Sans", "A": "A : Bricolage Grotesque + Instrument Sans", "B": "B : Fraunces + Figtree", "C": "C : Familjen Grotesk + Hanken Grotesk", "D": "D : Epilogue + Karla", "E": "E : Archivo large + Archivo"},bar=document.getElementById('polices'),nom=document.getElementById('polNom');
+  function choisir(l){document.documentElement.dataset.police=l;bar.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.p===l));nom.textContent=N[l];
+    const recaler=()=>{dispatchEvent(new Event('resize'));document.querySelectorAll('h2.nombres').forEach(h=>{h.style.fontSize='';let f=parseFloat(getComputedStyle(h).fontSize);while(h.scrollWidth>h.clientWidth+1&&f>14){f-=1;h.style.fontSize=f+'px';}});if(window.__ajuster)document.querySelectorAll('main>section').forEach(x=>window.__ajuster(x));};
+    recaler();if(document.fonts)document.fonts.ready.then(()=>setTimeout(recaler,50));}
+  bar.addEventListener('click',e=>{const b=e.target.closest('button[data-p]');if(!b)return;e.stopPropagation();choisir(b.dataset.p);},true);
+  choisir('C');
+})();
+</script>
+</body>
+</html>
