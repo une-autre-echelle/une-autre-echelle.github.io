@@ -482,19 +482,25 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
         [20,'Même avec un salaire d\'un million par an, il faudrait mille ans pour arriver au bout.'],
         [40,'Au-delà d\'un certain point, tout devient juste « beaucoup ».'],
         [70,()=>`À un écran par seconde, il faudrait encore ${Math.round(reste/60)} minutes pour arriver au bout.`],
-        [160,'Quelqu\'un qui gagne 100 000 € par an, ce qui est déjà rare, mettrait 10 000 ans à parcourir cette ligne.'],
-        [520,'La moitié. Il reste devant autant de chemin que derrière.'],
-        [580,'Un milliard, c\'est la plus petite fortune qu\'un milliardaire puisse avoir.'],
-        [640,'Gagner 1 000 € de l\'heure, jour et nuit, sans jamais dormir : il faudrait 114 ans pour faire un milliard.'],
-        [700,()=>`Déjà ${Math.min(800,ecran).toLocaleString('fr-FR')} écrans. Le million tenait dans le premier.`],
-        [740,'Ce chemin, c\'est la distance entre un millionnaire et un milliardaire.'],
-        [780,'Quelqu\'un qui aurait mis 1 000 € de côté chaque jour depuis la naissance de Jésus aurait aujourd\'hui à peu près cette somme. Pas encore un milliard.'],
-        [880,'La fortune d\'Elon Musk ferait 870 fois cette ligne. Aucune vie ne suffirait à dépenser une telle somme.'],
-        [950,()=>`Encore ${reste.toLocaleString('fr-FR')} écrans. Le million, c'était il y a ${depuis.toLocaleString('fr-FR')} écrans.`],
-        [990,'Le premier million semblait déjà énorme.'],
+        [130,'Quelqu\'un qui gagne 100 000 € par an, ce qui est déjà rare, mettrait 10 000 ans à parcourir cette ligne.'],
+        [190,'Chaque écran que vous faites défiler vaut 1,25 million d\'euros : plus que ce qu\'un salarié au SMIC gagne en toute une vie.'],
+        [250,'Le patrimoine médian d\'un ménage en France est d\'environ 177 000 €. Pour faire un milliard, il faudrait réunir celui de plus de 5 600 ménages.'],
+        [310,'Plus de 250 fois le million du départ. Et pas encore le tiers du chemin.'],
+        [380,'Sur un écran d\'ordinateur portable, cette ligne entière ferait environ 240 mètres. Le million en occupe une vingtaine de centimètres.'],
+        [440,'Il suffit d\'environ 2,2 millions de patrimoine pour faire partie du 1 % des ménages les plus riches de France. Ici, on a déjà plus de 150 fois ce seuil.'],
+        [500,()=>`Le million est maintenant ${depuis.toLocaleString('fr-FR')} écrans derrière vous.`],
+        [540,'La moitié. Il reste devant autant de chemin que derrière.'],
+        [600,'Un milliard, c\'est la plus petite fortune qu\'un milliardaire puisse avoir.'],
+        [660,'Gagner 1 000 € de l\'heure, jour et nuit, sans jamais dormir : il faudrait 114 ans pour faire un milliard.'],
+        [720,()=>`Déjà ${Math.min(800,ecran).toLocaleString('fr-FR')} écrans. Le million tenait dans le premier.`],
+        [780,'Ce chemin, c\'est la distance entre un millionnaire et un milliardaire.'],
+        [840,'Quelqu\'un qui aurait mis 1 000 € de côté chaque jour depuis la naissance de Jésus aurait aujourd\'hui à peu près cette somme. Pas encore un milliard.'],
+        [900,'La fortune d\'Elon Musk ferait 870 fois cette ligne. Aucune vie ne suffirait à dépenser une telle somme.'],
+        [960,()=>`Encore ${reste.toLocaleString('fr-FR')} écrans.`],
+        [999.999,'Le premier million semblait déjà énorme.'],
       ];
       const ligne=C.find(c=>mm<c[0]);
-      t=ligne?(typeof ligne[1]==='function'?ligne[1]():ligne[1]):'Un milliard.';
+      t=ligne?(typeof ligne[1]==='function'?ligne[1]():ligne[1]):'Voici 1 milliard.';
     }
     if(t+tr!==zDernier){zDernier=t+tr;zCom.textContent=t;zTraj.textContent=tr;}
   }
