@@ -248,7 +248,7 @@
 </head>
 <body>
 <div class="fixe haut"><div class="mark">Une autre échelle</div><div><b id="n">1</b> / <span id="tot"></span></div></div>
-<div class="fixe bas"><div class="aide">cliquer ou espace : réponse suivante</div><div class="polices" id="polices" hidden><button type="button" data-p="0">Actuelle</button><button type="button" data-p="A">A</button><button type="button" data-p="B">B</button><button type="button" data-p="C">C</button><button type="button" data-p="D">D</button><button type="button" data-p="E">E</button><span id="polNom"></span></div><button id="theme">Sombre</button></div>
+<div class="fixe bas"><div class="polices" id="polices" hidden><button type="button" data-p="0">Actuelle</button><button type="button" data-p="A">A</button><button type="button" data-p="B">B</button><button type="button" data-p="C">C</button><button type="button" data-p="D">D</button><button type="button" data-p="E">E</button><span id="polNom"></span></div></div>
 
 <main>
 
@@ -526,8 +526,7 @@ document.querySelectorAll('.bande').forEach(b=>{
   b.addEventListener('scroll',()=>{out.textContent=Math.round(b.scrollLeft*u).toLocaleString('fr-FR')+' €';},{passive:true});
   let d=null;b.addEventListener('pointerdown',e=>{d=e.clientX;});b.addEventListener('pointermove',e=>{if(d===null)return;b.scrollLeft-=e.clientX-d;d=e.clientX;});addEventListener('pointerup',()=>d=null);
 });
-const bt=document.getElementById('theme');
-bt.onclick=()=>{const d=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=d?'light':'dark';bt.textContent=d?'Sombre':'Clair';};
+
 
 // ---- révélation façon 3A : tout se révèle, rien ne part tout seul ----
 (function(){
