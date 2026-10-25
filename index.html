@@ -637,7 +637,7 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
     el('eti borne','Début de la fortune de Bernard Arnault',{left:(xF)+'px',width:(tel?260:600)+'px',bottom:(H-yb+10)+'px'});
     let c=xF+marge;
     c=texte(c,'Que pourrait-on faire en France avec cette fortune ?')+marge;
-    const hI=Math.round(B*0.68);                 // les choses payées sont plus basses que la bande : on voit la fortune au-dessus
+    const sommeV=items.reduce((a,o)=>a+o.v,0),place=LF-(c-xF)-items.length*marge*2-reste.length*(tw+marge*2)-W;const hI=Math.min(B,Math.max(Math.round(B*0.68),Math.ceil(sommeV/1000/Math.max(1,place))));                 // les choses payées sont plus basses que la bande : on voit la fortune au-dessus
     for(const o of items){
       const w=Math.max(1,Math.round(o.v/1000/hI));
       const d=el('obj',`<span class="nom paye" style="max-width:${Math.max(120,Math.min(w-28,W-40,tel?260:380))}px"><strong>${o.l}</strong><span class="cout">${o.v>=1e9&&o.v<1e10?fr(o.v/1e9,2)+" milliard"+(o.v>=2e9?"s":"")+" €":eur(o.v)}</span></span><div class="pave" style="height:${hI}px;background:var(${o.c})"></div><div class="grad" style="--p:${1e8/1000/hI}px;--m:${1e9/1000/hI}px"></div>`,{left:c+'px',top:yb+'px',width:w+'px',height:B+'px'});
