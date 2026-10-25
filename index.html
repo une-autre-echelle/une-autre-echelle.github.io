@@ -592,7 +592,6 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
     {t:()=>`Tout cela payé, il lui resterait encore <b>${eur(TOTAL-paye)}</b>.`},
     {t:()=>`Placé à 3 % par an, sans réinvestir les intérêts, ce reste lui rapporterait environ ${eur(Math.round((TOTAL-paye)*0.03/1e8)*1e8)} par an : ${eur(Math.round((TOTAL-paye)*0.03/365/1e5)*1e5)} par jour.`},
     {t:()=>'Le 26 janvier 2024, sa fortune a pris 23,6 milliards de dollars en une seule journée, selon Forbes.'},
-    {t:()=>'Vous êtes toujours dans la fortune de Bernard Arnault.'},
   ];
 
   let W=0,longueur=0,xF=0,LF=0,B=0,pos=[];
@@ -653,16 +652,17 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
           const t=el('txt',txts[i],{position:'sticky',left:colle+'px',width:tw+'px'});sg.appendChild(t);}
         // repères dans les grands blocs : où on en est
         if(o.v>=2e9){const mil=1e9/1000/hI,tot=Math.round(o.v/1e9);
-          for(let k=1;k<tot;k++)el('repere',`${k} milliard${k>1?'s':''} sur ${tot}`,{left:(c+k*mil)+'px',top:(yb+B-hI+12)+'px'});}
+          for(let k=1;k<tot;k++)el('repere',`${k} milliard${k>1?'s':''} sur ${tot}`,{left:(c+k*mil)+'px',top:(yb+Math.max(120,Math.round(B*0.33)))+'px'});}
         c+=w+8;
       }else{ // bloc trop court pour étaler les textes : on les empile dans le bloc, l'un au-dessus de l'autre
         el('txt pile',txts.map(t=>`<p>${t}</p>`).join(''),{left:(c+14)+'px',width:Math.max(60,w-28)+'px',bottom:(yb+52)+'px'});
         c+=w+8;
       }
     }
-    const fin=xF+LF;const nR=Math.max(1,Math.min(reste.length,Math.floor((fin-c-300)/(tw+marge*2))));const pas=Math.max(tw+marge*2,(fin-c-W)/nR);
-    reste.slice(0,nR).forEach((r,i)=>texte(c+marge+i*pas,r.t()));
-    {const mil=1e9/1000/B;for(let g=Math.ceil((c-xF)/mil)+1;g<TOTAL/1e9;g++)el('repere',`${g} milliards parcourus sur ${TOTAL/1e9}`,{left:(xF+g*mil)+'px',top:(yb+12)+'px'});}
+    const fin=xF+LF;
+    {const x0=c+marge,x1=fin-Math.round(W*0.6),n=reste.length,lg=Math.max(tw+marge*2,(x1-x0)/n),colle=Math.round(Math.max(20,W*0.5-tw/2)),ecart=Math.round(Math.min(W*0.6,Math.max(0,lg-tw-40)));
+      reste.forEach((r,i)=>{const sg=el('seg',null,{left:(x0+i*lg)+'px',width:Math.max(tw,lg-ecart)+'px',top:(yb+Math.round(B*0.42))+'px'});const t=el('txt',r.t(),{position:'sticky',left:colle+'px',width:tw+'px'});sg.appendChild(t);});}
+    {const mil=1e9/1000/B;for(let g=1;g<TOTAL/1e9;g++)el('repere',`${g} milliard${g>1?'s':''} parcouru${g>1?'s':''} sur ${TOTAL/1e9}`,{left:(xF+g*mil)+'px',top:(yb+B-46)+'px'});}
     el('eti borne','Fin de la fortune de Bernard Arnault',{left:(fin-(tel?260:600))+'px',width:(tel?260:600)+'px',textAlign:'right',bottom:(H-yb+10)+'px'});
     let xe=fin+marge;xe=texte(xe,'Bernard Arnault est la 17<sup>e</sup> personne la plus riche du monde. Seize personnes ont donc encore plus que lui.')+marge;xe=texte(xe,'La fortune d\'Elon Musk, la plus grande du monde, ferait une bande presque huit fois plus longue que celle-ci.')+W*0.4;
     longueur=xe;monde.style.width=longueur+'px';
