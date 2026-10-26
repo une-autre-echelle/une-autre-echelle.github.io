@@ -22,6 +22,51 @@
 <style>
   @font-face{font-family:"Familjen Grotesk";src:url(fonts/familjen-grotesk.woff) format("woff");font-weight:400 700;font-display:swap}
   @font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk.woff) format("woff");font-weight:100 900;font-display:swap}
+
+  /* écrans de test B, C, D */
+  .nvb-piste{position:relative;height:130px;max-width:min(1100px,100%);margin:26px 0 10px;touch-action:none}
+  .nvb-rail{position:absolute;left:0;right:0;top:60px;height:3px;background:var(--ink)}
+  .nvb-bout{position:absolute;left:0;top:74px;font-size:14px;color:var(--mute)}
+  .nvb-bout b{display:block;color:var(--ink);font-family:var(--ft);font-size:16px}
+  .nvb-bout.nvb-d{left:auto;right:0;text-align:right}
+  .nvb-j{position:absolute;top:28px;transform:translateX(-50%);cursor:grab;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 14px var(--ft);user-select:none}
+  .nvb-j i{width:20px;height:20px;background:var(--accent);display:block}
+  .nvb-j.g{transform:translateX(-10px);align-items:flex-start}.nvb-j.g span{margin-left:16px}
+  .nvb-j.dd{transform:translateX(calc(-100% + 10px));align-items:flex-end}
+  .nvb-j.nvb-vrai{cursor:default;top:0;transform:none;align-items:flex-start;color:#2f6fa3;z-index:3;pointer-events:none}
+  .nvb-j.nvb-vrai i{width:5px;height:58px;background:#2f6fa3;margin-left:-1px}
+  .nvb-j.nvb-vrai span{background:var(--bg);padding-right:4px}
+  .nv-btn{font:600 16px var(--fb);background:var(--ink);color:var(--bg);border:0;padding:13px 22px;cursor:pointer;align-self:flex-start}
+  .nv-lien{font:inherit;background:none;border:0;color:var(--mute);text-decoration:underline;cursor:pointer;padding:0;font-size:14px;margin-top:8px}
+  .nv-res{display:flex;flex-direction:column;gap:8px;max-width:900px}
+  .nvc-axe{position:relative;height:230px;max-width:1120px;margin:14px 0 0}
+  .nvc-trait{position:absolute;left:0;right:0;top:180px;height:3px;background:var(--ink)}
+  .nvc-rep{position:absolute;top:192px;font-size:12px;color:var(--mute);transform:translateX(-50%);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .nvc-rep.g{transform:none}.nvc-rep.d{transform:translateX(-100%)}
+  .nvc-vie{position:absolute;right:0;top:176px;height:11px;width:3.55%;background:var(--b1);opacity:.85}
+  .nvc-vie span{position:absolute;right:0;top:34px;font-size:12px;color:var(--mute);white-space:nowrap}
+  .nvc-pt{position:absolute;top:174px;width:15px;height:15px;transform:translateX(-50%);background:var(--accent);transition:opacity .4s}
+  .nvc-lab{position:absolute;font-size:14px;line-height:1.25;white-space:nowrap;transition:opacity .4s;padding:0 7px;border-left:2px solid var(--accent)}
+  .nvc-lab.d{border-left:0;border-right:2px solid var(--accent);transform:translateX(-100%);text-align:right}
+  .nvc-lab b{display:block;font-family:var(--ft)}
+  .nvc-lab span{color:var(--mute)}
+  .nvc-pt.off,.nvc-lab.off{opacity:0}
+  .nvc-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;max-width:1120px}
+  .nvc-liste button{font:600 15px var(--ft);background:var(--cache);color:var(--ink);border:0;padding:10px 16px;cursor:pointer}
+  .nvc-liste button.on{background:none;color:var(--mute);text-decoration:line-through;text-decoration-color:var(--rail);cursor:default}
+  .nv-btn[hidden],.nvb-j[hidden],#nvbRes[hidden],#nvbRe[hidden]{display:none!important}
+  .nvd-cpts{display:grid;max-width:1000px;margin-top:6px}
+  .nvd-cpt{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr) auto;gap:18px;align-items:baseline;border-top:1px solid var(--rail);padding:11px 0}
+  .nvd-cpt b{font-family:var(--ft)}
+  .nvd-cpt b small{display:block;font:400 13.5px var(--fb);color:var(--mute);margin-top:2px}
+  .nvd-sous{margin:22px 0 4px;font-size:16px;color:var(--ink)}
+  .nvd-cpt.vous .nvd-val{color:var(--ink)}
+  .nvd-cpt.vous{border-bottom:1px solid var(--rail)}
+  .nvd-val{font:700 clamp(22px,2.8vw,40px)/1 var(--ft);letter-spacing:-.02em;font-variant-numeric:tabular-nums;text-align:right}
+  .nvd-ry{color:var(--mute);font-size:13.5px}
+  .nvd-cpt.vous .nvd-val{color:var(--mute)}
+  .nvd-cpt.mi b,.nvd-cpt.mi .nvd-val{color:var(--accent)}
+  @media (max-width:640px){.nvc-rep.an1{display:none}.nvc-lab{font-size:12.5px}.nvc-lab span{display:block;white-space:normal;max-width:150px}.nvc-liste button{font-size:14px;padding:9px 12px}.nvd-cpt{grid-template-columns:1fr auto;gap:2px 12px}.nvd-ry{grid-column:1/-1;order:3}.nvd-val{font-size:22px}}
 </style>
 
 <style>
@@ -339,12 +384,22 @@
   </div>
 </section>
 
-<section>
+<section class="nv-b">
   <h2 class="situ">La fortune de Kylian Mbappé est estimée à environ 170 millions.</h2>
-  <p class="question">De qui est-il le plus proche : de vous, ou de Bernard Arnault ?</p>
-  <div class="ligne"><div class="k"><b>Entre vous et lui</b></div><div class="v"><div class="chiffre">170 millions d'euros.</div></div></div>
-  <div class="ligne"><div class="k"><b>Entre lui et Arnault</b></div><div class="v"><button class="cache" data-c="104 milliards d'euros" data-d="Mbappé est environ 610 fois plus proche de vous que de Bernard Arnault.">Révéler</button></div></div>
-  <div class="ligne mi"><div class="k"><b>Entre lui et Musk</b></div><div class="v"><button class="cache" data-c="824 milliards d'euros" data-d="Environ 4 800 fois plus proche de vous que d'Elon Musk. À cette échelle, un millionnaire et vous, c'est presque le même point.">Révéler</button></div></div>
+  <p class="question">Placez-le sur la ligne, entre vous et Bernard Arnault.</p>
+  <div class="nvb-piste" id="nvbP">
+    <div class="nvb-rail"></div>
+    <div class="nvb-bout"><b>Vous</b>0 €</div>
+    <div class="nvb-bout nvb-d"><b>Bernard Arnault</b>104 milliards €</div>
+    <div class="nvb-j" id="nvbJ" style="left:40%" tabindex="0" role="slider" aria-label="Position de Kylian Mbappé" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><span>Mbappé ?</span><i></i></div>
+    <div class="nvb-j nvb-vrai" id="nvbV" hidden><span>Le vrai Mbappé</span><i></i></div>
+  </div>
+  <button type="button" class="nv-btn" id="nvbGo">Vérifier</button>
+  <div class="nv-res" id="nvbRes" hidden>
+    <div class="chiffre" id="nvbTxt"></div>
+    <p class="detail">Le vrai Mbappé est à 0,16 % de la ligne : environ 610 fois plus proche de vous que de Bernard Arnault. Et environ 4 800 fois plus proche de vous que d'Elon Musk. À cette échelle, un millionnaire et vous, c'est presque le même point.</p>
+    <button type="button" class="nv-lien" id="nvbRe">Rejouer</button>
+  </div>
 </section>
 
 <section class="dense">
@@ -362,33 +417,19 @@
   </div>
 </section>
 
-<section class="dense">
+<section class="nv-c">
   <h2 class="situ">Dépenser 1 million par jour, tous les jours.</h2>
-  <p class="question">Ruiné au bout de combien de temps ?</p>
-  <div class="groupe"><span class="nomg">Millionnaires</span>
-  <div class="ligne"><div class="k"><b>Bad Bunny</b></div><div class="v"><button class="cache" data-c="Dans quatre mois" data-d="">Révéler</button></div></div>
-  <div class="ligne"><div class="k"><b>Kylian Mbappé</b></div><div class="v"><button class="cache" data-c="Dans cinq mois et demi" data-d="">Révéler</button></div></div>
-  </div>
-  <div class="groupe g2"><span class="nomg">Milliardaires</span>
-  <div class="ligne"><div class="k"><b>Xavier Niel</b></div><div class="v"><button class="cache" data-c="Dans 34 ans et demi" data-d="">Révéler</button></div></div>
-  <div class="ligne"><div class="k"><b>Bernard Arnault</b></div><div class="v"><button class="cache" data-c="Dans 285 ans" data-d="">Révéler</button></div></div>
-  <div class="ligne mi"><div class="k"><b>Elon Musk</b></div><div class="v"><button class="cache" data-c="Dans 2 250 ans" data-d="Pour être ruiné aujourd'hui, il aurait fallu commencer du temps d'Archimède.">Révéler</button></div></div>
-  </div>
+  <p class="question">Pour être ruiné aujourd'hui, en quelle année aurait-il fallu commencer ? Touchez un nom.</p>
+  <div class="nvc-axe" id="nvcAxe"><div class="nvc-trait"></div><div class="nvc-vie"><span>une vie : 80 ans</span></div></div>
+  <div class="nvc-liste" id="nvcL"></div>
+  <p class="detail">La frise est à l'échelle : de gauche à droite, 2 256 ans.</p>
 </section>
 
-<section class="dense">
-  <h2 class="situ">Tout placer à 3 % et vivre des intérêts, sans travailler.</h2>
+<section class="nv-d">
+  <h2 class="situ">Vous gagnez 1 million d'euros au loto, et vous le placez à 3 % par an.</h2>
   <p class="precision">Intérêts simples, non cumulés.</p>
-  <p class="question">Ça rapporte, chaque jour :</p>
-  <div class="groupe"><span class="nomg">Millionnaires</span>
-  <div class="ligne"><div class="k"><b>Bad Bunny</b></div><div class="v"><button class="cache" data-c="10 000 € par jour" data-d="Sept SMIC, chaque jour.">Révéler</button></div></div>
-  <div class="ligne"><div class="k"><b>Kylian Mbappé</b></div><div class="v"><button class="cache" data-c="14 000 € par jour" data-d="Presque dix SMIC, chaque jour.">Révéler</button></div></div>
-  </div>
-  <div class="groupe g2"><span class="nomg">Milliardaires</span>
-  <div class="ligne"><div class="k"><b>Xavier Niel</b></div><div class="v"><button class="cache" data-c="1 million € par jour" data-d="58 ans de SMIC, chaque matin.">Révéler</button></div></div>
-  <div class="ligne"><div class="k"><b>Bernard Arnault</b></div><div class="v"><button class="cache" data-c="8,5 millions € par jour" data-d="480 ans de SMIC, chaque matin.">Révéler</button></div></div>
-  <div class="ligne mi"><div class="k"><b>Elon Musk</b></div><div class="v"><button class="cache" data-c="68 millions € par jour" data-d="3 800 ans de SMIC chaque matin, en dormant.">Révéler</button></div></div>
-  </div>
+  <p class="question">Depuis que vous êtes sur cet écran, il vous a rapporté :</p>
+  <div class="nvd-cpts" id="nvdC"></div>
 </section>
 
 <section class="dense fin3">
@@ -729,6 +770,33 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
 })();
 
 (function(){const f=document.getElementById('flecheBas');if(!f)return;const m=()=>f.classList.toggle('cachee',scrollY>40);addEventListener('scroll',m,{passive:true});m();})();
+
+// ---- écrans de test B, C, D ----
+(function(){const fr=n=>Math.round(n).toLocaleString('fr-FR');
+const P=document.getElementById('nvbP');if(P){const J=document.getElementById('nvbJ'),V=document.getElementById('nvbV');let pos=40,drag=false;
+ const set=p=>{pos=Math.max(0,Math.min(100,p));J.style.left=pos+'%';J.classList.toggle('g',pos<6);J.classList.toggle('dd',pos>94);J.setAttribute('aria-valuenow',Math.round(pos));};
+ J.addEventListener('pointerdown',e=>{drag=true;J.setPointerCapture(e.pointerId);e.stopPropagation();});
+ J.addEventListener('pointermove',e=>{if(!drag)return;const r=P.getBoundingClientRect();set((e.clientX-r.left)/r.width*100);});
+ J.addEventListener('pointerup',()=>drag=false);
+ J.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){set(pos-1);e.preventDefault();}if(e.key==='ArrowRight'){set(pos+1);e.preventDefault();}});
+ document.getElementById('nvbGo').onclick=e=>{e.stopPropagation();V.hidden=false;V.style.left='0.16%';const m=pos/100*104;
+  document.getElementById('nvbTxt').textContent=m<1?`Vous l'aviez mis à ${fr(m*1000)} millions.`:`Vous l'aviez mis à ${fr(m)} milliards.`;
+  document.getElementById('nvbRes').hidden=false;e.target.hidden=true;};
+ document.getElementById('nvbRe').onclick=e=>{e.stopPropagation();V.hidden=true;document.getElementById('nvbRes').hidden=true;document.getElementById('nvbGo').hidden=false;set(40);};}
+const ax=document.getElementById('nvcAxe');if(ax){const C=[['Bad Bunny','juin 2026',2026,3],['Kylian Mbappé','mai 2026',2026,2],['Xavier Niel','1992',1992,1],['Bernard Arnault','1741, sous Louis XV',1741,0],['Elon Musk','vers 230 avant J.-C., du temps d\'Archimède',-230,0]];
+ const x=v=>(v+230)/2256*100;
+ [[-230,'−230','g'],[1,'an 1','an1'],[500,'500',''],[1000,'1000',''],[1500,'1500',''],[2026,'2026','d']].forEach(([v,t,c])=>{const d=document.createElement('div');d.className='nvc-rep '+c;d.style.left=x(v)+'%';d.textContent=t;ax.appendChild(d);});
+ const pts=C.map(c=>{const d=document.createElement('div');d.className='nvc-pt off';d.style.left=x(c[2])+'%';ax.appendChild(d);
+  const l=document.createElement('div');const dr=x(c[2])>50;l.className='nvc-lab off'+(dr?' d':'');l.style.left=x(c[2])+'%';const top=128-c[3]*40;l.style.top=top+'px';l.style.height=(174-top)+'px';l.innerHTML=`<b>${c[0]}</b><span>${c[1]}</span>`;ax.appendChild(l);return [d,l];});
+ const L=document.getElementById('nvcL');L.innerHTML=C.map((c,i)=>`<button type="button" data-i="${i}">${c[0]}</button>`).join('');
+ L.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();const i=+b.dataset.i;b.classList.add('on');pts[i].forEach(el=>el.classList.remove('off'));});}
+const dc=document.getElementById('nvdC');if(dc){const an=365*86400;const D=[['Vous','1 million d\'euros','vous',1e6*0.03/an],['Bernard Arnault','104 milliards d\'euros','',104e9*0.03/an],['Elon Musk','824 milliards d\'euros','mi',824e9*0.03/an]];
+ const fj=v=>fr(v*86400)+' € par jour';
+ dc.innerHTML=D.map((d,i)=>(i===1?'<p class="nvd-sous">Et s\'ils plaçaient leur fortune au même taux :</p>':'')+`<div class="nvd-cpt ${d[2]}"><b>${d[0]}<small>${d[1]}</small></b><span class="nvd-ry">${fj(d[3])}</span><span class="nvd-val" id="nvd${i}">0 €</span></div>`).join('');
+ const sec=dc.closest('section');let t0=null,vu=false;
+ new IntersectionObserver(es=>{vu=es[0].isIntersecting;if(vu&&t0===null)t0=performance.now();},{threshold:.4}).observe(sec);
+ const tick=()=>{if(vu&&t0!==null){const s=(performance.now()-t0)/1000;D.forEach((d,i)=>{const v=d[3]*s;document.getElementById('nvd'+i).textContent=(v<1?v.toFixed(4):v<100?v.toFixed(2):fr(v)).toString().replace('.',',')+' €';});}requestAnimationFrame(tick);};tick();}
+})();
 </script>
 </body>
 </html>
