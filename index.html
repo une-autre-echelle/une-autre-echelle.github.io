@@ -31,8 +31,8 @@
   .nvb-bout.nvb-d{left:auto;right:0;text-align:right}
   .nvb-j{position:absolute;top:28px;transform:translateX(-50%);cursor:grab;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 14px var(--ft);user-select:none}
   .nvb-j i{width:20px;height:20px;background:var(--accent);display:block}
-  .nvb-j.g{transform:translateX(-10px);align-items:flex-start}.nvb-j.g span{margin-left:16px}
-  .nvb-j.dd{transform:translateX(calc(-100% + 10px));align-items:flex-end}
+  .nvb-j.g{transform:none;align-items:flex-start}.nvb-j.g span{margin-left:16px}
+  .nvb-j.dd{transform:translateX(-100%);align-items:flex-end}
   .nvb-j.nvb-vrai{cursor:default;top:0;transform:none;align-items:flex-start;color:#2f6fa3;z-index:3;pointer-events:none}
   .nvb-j.nvb-vrai i{width:5px;height:58px;background:#2f6fa3;margin-left:-1px}
   .nvb-j.nvb-vrai span{background:var(--bg);padding-right:4px}
@@ -774,8 +774,7 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
 })();
 
 (function(){const f=document.getElementById('flecheBas');if(!f)return;const m=()=>f.classList.toggle('cachee',scrollY>40);addEventListener('scroll',m,{passive:true});m();})();
-</script>
-<script data-goatcounter="https://une-autre-echelle.goatcounter.com/count" async src="https://gc.zgo.at/count.js">
+
 // ---- écrans de test B, C, D ----
 (function(){const fr=n=>Math.round(n).toLocaleString('fr-FR');const reduit=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const P=document.getElementById('nvbP');if(P){const J=document.getElementById('nvbJ'),V=document.getElementById('nvbV');let pos=40,drag=false;
@@ -785,7 +784,7 @@ const P=document.getElementById('nvbP');if(P){const J=document.getElementById('n
  J.addEventListener('pointerup',()=>drag=false);
  J.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){set(pos-1);e.preventDefault();}if(e.key==='ArrowRight'){set(pos+1);e.preventDefault();}});
  document.getElementById('nvbGo').onclick=e=>{e.stopPropagation();V.hidden=false;V.style.left='0.16%';const m=pos/100*104;
-  document.getElementById('nvbTxt').textContent=m<1?`Vous l'aviez mis à ${fr(m*1000)} millions.`:`Vous l'aviez mis à ${fr(m)} milliards.`;
+  document.getElementById('nvbTxt').textContent=m*1000<1?`Vous l'aviez mis à moins d'un million.`:m<1?`Vous l'aviez mis à ${fr(m*1000)} millions.`:`Vous l'aviez mis à ${fr(m)} milliards.`;
   document.getElementById('nvbRes').hidden=false;e.target.hidden=true;};
  document.getElementById('nvbRe').onclick=e=>{e.stopPropagation();V.hidden=true;document.getElementById('nvbRes').hidden=true;document.getElementById('nvbGo').hidden=false;set(40);};}
 const L=document.getElementById('nvcL');if(L){
@@ -831,5 +830,6 @@ const dc=document.getElementById('nvdC');if(dc){const an=365*86400;const D=[['Vo
  const tick=()=>{if(vu&&t0!==null){const s=(performance.now()-t0)/1000;D.forEach((d,i)=>{const v=d[3]*s;document.getElementById('nvd'+i).textContent=(v<1?v.toFixed(4):v<100?v.toFixed(2):fr(v)).toString().replace('.',',')+' €';});}requestAnimationFrame(tick);};tick();}
 })();
 </script>
+<script data-goatcounter="https://une-autre-echelle.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
