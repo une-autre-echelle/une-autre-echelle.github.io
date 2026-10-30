@@ -333,14 +333,7 @@
   <div class="ligne mi"><div class="k"><b>1 milliard</b></div><div class="v"><button class="cache" data-c="82 000 € par jour" data-d="Quatre ans et demi de SMIC, chaque matin.">Révéler</button></div></div>
 </section>
 
-<section class="trans" id="zoom">
-  <div class="fleche" id="flecheZ" aria-hidden="true"><span>défiler</span><svg viewBox="0 0 170 50" width="170" height="50"><path d="M2 26H160M136 4l26 22-26 22" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  <h2>Avant d'aller plus loin, la même chose sur une ligne à l'échelle.</h2>
-  <canvas id="echelle" class="echelle" tabindex="0" role="img" aria-label="Ligne graduée de 0 à 1 milliard d'euros. Flèches gauche et droite pour avancer, Début et Fin pour aller aux extrémités."></canvas>
-  <div class="compteurZ"><b id="zoomPos">0 €</b><span id="zoomTrajet"></span></div>
-  <p class="commentaire" id="zoomCom" aria-live="polite"></p>
-  <p class="lecture"><span id="zoomEtat">la ligne s'éloigne</span> · <button class="lien rejouer" id="zoomRejouer"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 3v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Rejouer l'animation</button></p>
-</section>
+
 
 <section>
   <h2 class="situ">Un million de secondes, un milliard de secondes.</h2>
@@ -477,7 +470,7 @@ document.querySelectorAll('.cache').forEach(b=>b.addEventListener('click',()=>{
 }));
 // ligne à l'échelle qui s'éloigne
 (function(){
-  const cv=document.getElementById('echelle'),c=cv.getContext('2d');
+  const cv=document.getElementById('echelle');if(!cv)return;const c=cv.getContext('2d');
   const SMIC=17735,M=1e6,G=1e9,marge=24;
   let W,H,dpr;
   function taille(){dpr=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;c.setTransform(dpr,0,0,dpr,0,0);}
